@@ -1,0 +1,29 @@
+ENVIRONMENT:
+  MAX_EPISODE_STEPS: 501
+SIMULATOR:
+  TYPE: "Sim-v0"
+  AGENT_0:
+    SENSORS: ['RGB_SENSOR']
+  ACTION_SPACE_CONFIG: "v2"
+  HABITAT_SIM_V0:
+    GPU_DEVICE_ID: 0
+  RGB_SENSOR:
+    WIDTH: 84
+    HEIGHT: 84
+TASK:
+  TYPE: Pose-v0
+  SENSORS: ['DELTA_SENSOR', 'COLLISION_SENSOR', 'POSE_RGB_SENSOR', 'POSE_REGRESS_SENSOR', 'POSE_MASK_SENSOR', 'ORACLE_ACTION_SENSOR']
+  POSE_RGB_SENSOR:
+    NREF: 100
+  POSE_REGRESS_SENSOR:
+    NREF: 100
+  POSE_MASK_SENSOR:
+    NREF: 100
+  ORACLE_ACTION_SENSOR:
+    ORACLE_TYPE: 'random'
+  MEASUREMENTS: []
+DATASET:
+  TYPE: PoseEstimation-v1
+  SPLIT: train
+  SCENES_DIR: env/habitat/habitat-api/data/scene_datasets
+  DATA_PATH: env/habitat/habitat-api/data/datasets/reconstruction/mp3d/v1/{split}/{split}.json.gz
