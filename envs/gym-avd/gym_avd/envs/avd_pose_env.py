@@ -1,13 +1,10 @@
 import os
 import gym
-import pdb
 import math
 import copy
 import json
 import gzip
-import h5py
 import pickle
-import random
 import numpy as np
 
 from typing import Any, Dict, List, Optional, Tuple
@@ -618,10 +615,6 @@ class AVDPoseLandmarksVisitLandmarksEnv(AVDPoseLandmarksEnv):
         agent_nodeix = self.images_to_nodes[self.agent_image]
         ref_nodeix = self.images_to_nodes[ref_image]
         ref_pose = self._get_pose(ref_image)
-        # This condition deals with cases where the connectivity in the
-        # graph is messed up.
-        if agent_nodeix not in self.paths or ref_nodeix not in self.paths[agent_nodeix]:
-            pdb.set_trace()
         # If the agent has reached the target node, align with the reference
         # pose
         if agent_nodeix == ref_nodeix:

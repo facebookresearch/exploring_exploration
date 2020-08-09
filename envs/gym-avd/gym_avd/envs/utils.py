@@ -1,5 +1,3 @@
-import os
-import pdb
 import cv2
 import math
 import scipy.ndimage

@@ -1,5 +1,4 @@
 import cv2
-import pdb
 import gym
 import gym_avd
 import numpy as np

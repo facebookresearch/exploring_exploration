@@ -1,7 +1,6 @@
 import os
 import gym
 import cv2
-import pdb
 import math
 import copy
 import h5py
@@ -14,7 +13,7 @@ import scipy.ndimage
 from typing import Any, Dict, List, Optional, Tuple
 
 import gym_avd
-from gym import error, spaces, utils
+from gym import spaces, utils
 from gym.utils import seeding
 from gym_avd.envs.config import *
 from gym_avd.envs.utils import *
@@ -447,10 +446,6 @@ class AVDBaseEnv(gym.Env):
         agent_nodeix = self.images_to_nodes[self.agent_image]
         ref_nodeix = self.images_to_nodes[ref_image]
         ref_pose = self._get_pose(ref_image)
-        # This condition deals with cases where the connectivity in the
-        # graph is messed up.
-        if agent_nodeix not in self.paths or ref_nodeix not in self.paths[agent_nodeix]:
-            pdb.set_trace()
         # If the agent has reached the target node, align with the reference
         # pose. If already aligned, return STOP(3).
         dist_agent2ref = self.distances[agent_nodeix][ref_nodeix]
