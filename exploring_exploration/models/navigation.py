@@ -1,6 +1,4 @@
-import sys
 import cv2
-import pdb
 import math
 import random
 import numpy as np

@@ -1,6 +1,5 @@
 import os
 import torch
-import numpy as np
 
 import gym
 import gym_avd

@@ -5,7 +5,6 @@ import numpy as np
 
 from exploring_exploration.utils.geometry import norm_cossin
 from exploring_exploration.utils.common import norm_angle
-from einops import rearrange, reduce, asnumpy
 
 
 def precision_at_k(pred_scores, gt_scores, k=5, gt_K=5):

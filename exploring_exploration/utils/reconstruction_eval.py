@@ -1,4 +1,3 @@
-import os
 import time
 import cv2
 import torch
@@ -8,7 +7,6 @@ import torch.nn.functional as F
 
 from exploring_exploration.utils.storage import RolloutStorageReconstruction
 from exploring_exploration.utils.geometry import (
-    polar2xyt,
     subtract_pose,
     process_odometer,
     compute_egocentric_coors,
@@ -21,7 +19,6 @@ from exploring_exploration.utils.visualization import (
 from exploring_exploration.utils.common import (
     process_image,
     unprocess_image,
-    resize_image,
     flatten_two,
     unflatten_two,
     unsq_exp,

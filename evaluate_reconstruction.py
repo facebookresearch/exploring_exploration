@@ -1,6 +1,5 @@
 import os
 import sys
-import math
 import json
 import h5py
 import torch
@@ -21,7 +20,6 @@ from exploring_exploration.models.reconstruction import (
     PoseEncoder,
 )
 from exploring_exploration.utils.reconstruction import rec_loss_fn_classify
-from tensorboardX import SummaryWriter
 
 args = get_args()
 

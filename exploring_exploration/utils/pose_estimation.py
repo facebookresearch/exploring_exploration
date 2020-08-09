@@ -17,7 +17,7 @@ from exploring_exploration.utils.geometry import (
     position_loss_fn,
     add_pose,
 )
-from einops import rearrange, reduce, asnumpy, repeat
+from einops import rearrange, repeat
 
 
 def get_gaussian_kernel(kernel_size=3, sigma=2, channels=3):

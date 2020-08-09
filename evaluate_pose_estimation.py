@@ -24,7 +24,6 @@ from exploring_exploration.utils.pose_estimation import (
     get_gaussian_kernel,
 )
 from exploring_exploration.utils.eval import evaluate_pose
-from tensorboardX import SummaryWriter
 
 args = get_args()
 

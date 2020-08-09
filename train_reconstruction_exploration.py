@@ -1,7 +1,6 @@
 import os
 import sys
 import time
-import math
 import h5py
 import torch
 import logging
@@ -35,7 +34,7 @@ from exploring_exploration.algo import PPO
 from exploring_exploration.models import RGBEncoder, MapRGBEncoder, Policy
 from exploring_exploration.utils.geometry import process_odometer
 from exploring_exploration.utils.reconstruction_eval import evaluate_reconstruction
-from einops import rearrange, reduce, asnumpy
+from einops import rearrange
 from tensorboardX import SummaryWriter
 
 args = get_args()

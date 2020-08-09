@@ -1,13 +1,9 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torchvision.models as models
 
 from exploring_exploration.utils.distributions import Categorical
-from exploring_exploration.utils.common import (
-    init,
-    init_normc_,
-)
+from exploring_exploration.utils.common import init
 
 
 class RGBEncoder(nn.Module):

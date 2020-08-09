@@ -1,11 +1,8 @@
 import os
 import sys
-import math
 import json
 import torch
 import logging
-import numpy as np
-import torch.nn as nn
 
 from exploring_exploration.arguments import get_args
 from exploring_exploration.envs import (
@@ -14,7 +11,6 @@ from exploring_exploration.envs import (
 )
 from exploring_exploration.models import RGBEncoder, MapRGBEncoder, Policy
 from exploring_exploration.utils.eval import evaluate_visitation
-from tensorboardX import SummaryWriter
 
 args = get_args()
 

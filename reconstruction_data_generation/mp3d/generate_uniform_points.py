@@ -1,19 +1,11 @@
 import os
-import pdb
-import gzip
 import json
-import math
-import random
+import habitat
+import argparse
 import numpy as np
 import multiprocessing as mp
 
 from PIL import Image
-
-import argparse
-
-import habitat
-from habitat_sim.utils import quat_from_coeffs
-from habitat.tasks.utils import quaternion_rotate_vector
 
 
 def safe_mkdir(path):

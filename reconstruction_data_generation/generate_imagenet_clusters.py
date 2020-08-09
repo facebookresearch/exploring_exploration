@@ -1,6 +1,5 @@
 import os
 import cv2
-import json
 import h5py
 import random
 import argparse
@@ -15,7 +14,7 @@ from torch.utils.data import Dataset, DataLoader
 from PIL import Image
 from tensorboardX import SummaryWriter
 from sklearn import metrics
-from sklearn.cluster import MiniBatchKMeans, KMeans
+from sklearn.cluster import MiniBatchKMeans
 from exploring_exploration.models.reconstruction import FeatureNetwork
 
 

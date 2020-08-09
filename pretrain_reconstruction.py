@@ -1,7 +1,6 @@
 import os
 import sys
 import time
-import math
 import h5py
 import torch
 import logging
@@ -30,7 +29,7 @@ from exploring_exploration.utils.geometry import process_odometer
 from exploring_exploration.utils.reconstruction_eval import (
     evaluate_reconstruction_oracle,
 )
-from einops import rearrange, reduce, asnumpy
+from einops import rearrange
 from tensorboardX import SummaryWriter
 
 args = get_args()
@@ -100,7 +99,6 @@ def main():
     args.nclusters = cluster_centroids.shape[0]
     clusters2images = {}
     for i in range(args.nclusters):
-        cluster_images = np.array(
             clusters_h5[f"cluster_{i}/images"]
         )  # (K, C, H, W) torch Tensor
         cluster_images = rearrange(cluster_images, "k c h w -> k h w c")

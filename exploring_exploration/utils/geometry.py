@@ -1,10 +1,5 @@
-import itertools
-import numpy as np
-
 import torch
-import torch.nn.functional as F
-
-from scipy.ndimage import gaussian_filter as gfilter
+import numpy as np
 
 approx_eq = lambda a, b, eps: torch.lt(torch.abs(a - b), eps)
 

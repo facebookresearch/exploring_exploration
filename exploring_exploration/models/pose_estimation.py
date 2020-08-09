@@ -2,18 +2,10 @@ import numpy as np
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torchvision.models as models
 
-from exploring_exploration.utils.common import (
-    init,
-    init_normc_,
-)
 from exploring_exploration.utils.geometry import process_pose
-from exploring_exploration.utils.common import (
-    flatten_two,
-    unflatten_two,
-)
+
 from einops import rearrange, reduce, asnumpy
 
 

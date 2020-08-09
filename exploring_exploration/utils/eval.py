@@ -5,12 +5,9 @@ import h5py
 import logging
 import numpy as np
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
 
 from exploring_exploration.utils.storage import RolloutStoragePoseEstimation
 from exploring_exploration.utils.geometry import (
-    polar2xyt,
     process_odometer,
     compute_egocentric_coors,
     process_pose,
@@ -34,7 +31,7 @@ from exploring_exploration.models.frontier_agent import FrontierAgent
 from exploring_exploration.utils.visualization import TensorboardWriter
 from exploring_exploration.utils.median_pooling import MedianPool1d
 from exploring_exploration.utils.metrics import compute_pose_metrics
-from einops import rearrange, reduce, asnumpy
+from einops import rearrange, asnumpy
 
 
 def evaluate_pose(
@@ -837,14 +834,6 @@ def evaluate_tdn_astar(models, envs, config, device, visualize_policy=False):
                         np.flip(exploration_topdown_map, axis=2)
                     )
 
-                    # temp_topdown = np.flip(infos[pr]['topdown_map'], axis=2)
-                    # temp_topdown = cv2.resize(temp_topdown, (400, 400))
-                    # temp_rgb = cv2.resize(per_proc_rgb[pr][-1], (400, 400))
-                    # temp_depth = cv2.resize(per_proc_depth[pr][-1], (400, 400))
-                    # temp_occ = cv2.resize(per_proc_coarse_occ[pr][-1], (400, 400))
-                    # cv2.imshow('Images', np.concatenate([temp_rgb, temp_depth, temp_occ, temp_topdown], axis=1))
-                    # cv2.waitKey(30)
-
             if done[0] or action == 3:
                 nav_error_all.append(infos[0]["nav_error"])
                 spl_score_all.append(infos[0]["spl"])
@@ -1118,24 +1107,6 @@ def evaluate_tdn_hierarchical_astar(
             elif step < num_steps_exp - 1:
                 assert not infos[0]["finished_exploration"]
                 exploration_topdown_map = infos[0]["topdown_map"]
-            # if visualize_policy:
-            #    for pr in range(num_processes):
-            #        rgb = torch_to_np(obs['im'][pr])
-            #        if 'habitat' in env_name:
-            #            depth = torch_to_np_depth(obs['depth'][pr]*10000.0)
-            #        else:
-            #            depth = torch_to_np_depth(obs['depth'][pr])
-            #        fine_occ = torch_to_np(obs['fine_occupancy'][pr])
-            #        coarse_occ = torch_to_np(obs['highres_coarse_occupancy'][pr])
-            #        topdown_map = np.flip(infos[pr]['topdown_map'], axis=2)
-            #        rgb = cv2.resize(rgb, (200, 200))
-            #        depth = cv2.resize(depth, (200, 200))
-            #        fine_occ = cv2.resize(fine_occ, (200, 200))
-            #        coarse_occ = cv2.resize(coarse_occ, (200, 200))
-            #        topdown_map = cv2.resize(topdown_map, (200, 200))
-
-            #        cv2.imshow('Exploration Images', np.concatenate([rgb, depth, fine_occ, coarse_occ, topdown_map], axis=1))
-            #        cv2.waitKey(30)
 
         # =================================================================
         # ===================== Navigation evaluation =====================
@@ -1256,25 +1227,11 @@ def evaluate_tdn_hierarchical_astar(
                         np.flip(exploration_topdown_map, axis=2)
                     )
 
-                    # temp_topdown = np.flip(infos[pr]['topdown_map'], axis=2)
-                    # temp_topdown = cv2.resize(temp_topdown, (400, 400))
-                    # temp_rgb = cv2.resize(per_proc_rgb[pr][-1], (400, 400))
-                    # temp_depth = cv2.resize(per_proc_depth[pr][-1], (400, 400))
-                    # temp_occ = cv2.resize(per_proc_coarse_occ[pr][-1], (400, 400))
-                    # cv2.imshow('Images', np.concatenate([temp_rgb, temp_depth, temp_occ, temp_topdown], axis=1))
-                    # cv2.waitKey(30)
-
             if done[0] or action == 3:
                 nav_error_all.append(infos[0]["nav_error"])
                 spl_score_all.append(infos[0]["spl"])
                 s_score_all.append(infos[0]["success_rate"])
                 break
-
-        # plt.clf()
-        # plt.plot([_ for _ in range(len(planned_trajectory_lengths))], planned_trajectory_lengths)
-        # plt.xlabel('Time steps')
-        # plt.ylabel('Planned trajectory lengths')
-        # plt.show()
         # Write the episode data to tensorboard
         if visualize_policy:
             proc_fn = lambda x: np.ascontiguousarray(

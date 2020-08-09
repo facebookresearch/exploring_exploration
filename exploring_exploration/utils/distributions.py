@@ -1,10 +1,7 @@
-import math
-
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
-from exploring_exploration.utils.common import init, init_normc_
+from exploring_exploration.utils.common import init
 
 """
 Modify standard PyTorch distributions so they are compatible with this code.

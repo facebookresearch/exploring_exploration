@@ -1,4 +1,3 @@
-import pdb
 import cv2
 import logging
 import numpy as np

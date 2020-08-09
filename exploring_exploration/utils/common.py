@@ -4,7 +4,7 @@ import random
 import numpy as np
 import torch.nn.functional as F
 
-from einops import rearrange, reduce, asnumpy
+from einops import rearrange, asnumpy
 
 
 def flatten_two(x):

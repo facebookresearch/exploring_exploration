@@ -1,7 +1,6 @@
 import os
 import sys
 import time
-import math
 import torch
 import logging
 import numpy as np
@@ -16,8 +15,6 @@ from exploring_exploration.envs import (
 from exploring_exploration.utils.common import (
     process_image,
     random_range,
-    flatten_two,
-    unflatten_two,
 )
 from exploring_exploration.models import RGBEncoder, MapRGBEncoder, Policy
 from exploring_exploration.models.curiosity import (
@@ -29,7 +26,6 @@ from exploring_exploration.utils.eval import evaluate_visitation
 from exploring_exploration.utils.storage import RolloutStoragePPO
 from exploring_exploration.algo import PPO
 from tensorboardX import SummaryWriter
-from einops import rearrange, asnumpy, reduce
 
 args = get_args()
 

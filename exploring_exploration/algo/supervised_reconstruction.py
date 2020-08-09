@@ -1,7 +1,5 @@
-import pdb
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
 import itertools
 
@@ -11,7 +9,7 @@ from exploring_exploration.utils.common import (
     unflatten_two,
     unsq_exp,
 )
-from einops import rearrange, reduce, asnumpy
+from einops import rearrange
 
 
 class SupervisedReconstruction:

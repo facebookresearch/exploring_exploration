@@ -1,11 +1,9 @@
-import pdb
 import torch
 
 from gym import spaces
 from gym.spaces import Box
 
 import habitat
-from habitat import VectorEnv
 from habitat_baselines.common.utils import batch_obs
 from habitat_baselines.common.env_utils import construct_envs
 from habitat_baselines.common.environments import PoseRLEnv, ExpNavRLEnv
