@@ -54,9 +54,7 @@ class Matterport3dDatasetV1(Dataset):
 
         self.sample_episodes(config.NUM_EPISODE_SAMPLE)
 
-    def from_json(
-        self, json_str: str, scenes_dir: Optional[str] = None
-    ) -> None:
+    def from_json(self, json_str: str, scenes_dir: Optional[str] = None) -> None:
         deserialized = json.loads(json_str)
         self.__dict__.update(deserialized)
         for ep_index, episode in enumerate(deserialized["episodes"]):

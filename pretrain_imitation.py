@@ -254,11 +254,14 @@ def main():
             # Compute the exploration rewards
             reward_exploration = torch.zeros(NPROC, 1)  # (N, 1)
             for proc in range(NPROC):
-                reward_exploration[proc] += float(infos[proc]["seen_area"]) - per_proc_area[proc]
+                reward_exploration[proc] += (
+                    float(infos[proc]["seen_area"]) - per_proc_area[proc]
+                )
                 per_proc_area[proc] = float(infos[proc]["seen_area"])
 
             overall_reward = (
-                reward * (1 - args.reward_scale) + reward_exploration * args.reward_scale
+                reward * (1 - args.reward_scale)
+                + reward_exploration * args.reward_scale
             )
 
             # Update statistics

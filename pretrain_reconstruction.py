@@ -28,7 +28,7 @@ from exploring_exploration.algo import SupervisedReconstruction
 from exploring_exploration.utils.storage import RolloutStorageReconstruction
 from exploring_exploration.utils.geometry import process_odometer
 from exploring_exploration.utils.reconstruction_eval import (
-    evaluate_reconstruction_oracle
+    evaluate_reconstruction_oracle,
 )
 from einops import rearrange, reduce, asnumpy
 from tensorboardX import SummaryWriter
@@ -103,16 +103,14 @@ def main():
         cluster_images = np.array(
             clusters_h5[f"cluster_{i}/images"]
         )  # (K, C, H, W) torch Tensor
-        cluster_images = rearrange(cluster_images, 'k c h w -> k h w c')
+        cluster_images = rearrange(cluster_images, "k c h w -> k h w c")
         cluster_images = (cluster_images * 255.0).astype(np.uint8)
         clusters2images[i] = cluster_images  # (K, H, W, C)
     clusters_h5.close()
 
     # =================== Create models ====================
     decoder = FeatureReconstructionModule(
-        args.nclusters,
-        args.nclusters,
-        nlayers=args.n_transformer_layers,
+        args.nclusters, args.nclusters, nlayers=args.n_transformer_layers,
     )
     feature_network = FeatureNetwork()
     feature_network = nn.DataParallel(feature_network, dim=0)
@@ -136,7 +134,7 @@ def main():
     feature_network.to(device)
     decoder.train()
     pose_encoder.train()
-    feature_network.eval() # Feature network is frozen
+    feature_network.eval()  # Feature network is frozen
 
     # =================== Define decoder training algorithm ====================
     algo_config = {}
@@ -200,9 +198,7 @@ def main():
             tgt_feat = torch.matmul(
                 tgt_feat, cluster_centroids.t()
             )  # (N*nRef, nclusters)
-        tgt_feat = unflatten_two(
-            tgt_feat, NPROC, NREF
-        )  # (N, nRef, nclusters)
+        tgt_feat = unflatten_two(tgt_feat, NPROC, NREF)  # (N, nRef, nclusters)
         rollouts.obs_feats[0].copy_(obs_feat)
         rollouts.obs_odometer[0].copy_(obs_odometer)
         rollouts.tgt_poses.copy_(tgt_poses)
@@ -227,9 +223,7 @@ def main():
                     obs_feat, cluster_centroids.t()
                 )  # (N, nclusters)
             # Always set masks to 1 (since this loop happens within one episode)
-            masks = torch.FloatTensor([[1.0] for _ in range(NPROC)]).to(
-                device
-            )
+            masks = torch.FloatTensor([[1.0] for _ in range(NPROC)]).to(device)
             # Accumulate odometer readings to give relative pose
             # from the starting point
             obs_odometer = rollouts.obs_odometer[pstep] * masks + obs_odometer

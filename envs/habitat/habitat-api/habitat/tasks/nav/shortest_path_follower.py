@@ -48,9 +48,7 @@ class ShortestPathFollower:
     ):
         assert (
             getattr(sim, "geodesic_distance", None) is not None
-        ), "{} must have a method called geodesic_distance".format(
-            type(sim).__name__
-        )
+        ), "{} must have a method called geodesic_distance".format(type(sim).__name__)
 
         self._sim = sim
         self._max_delta = self._sim.config.FORWARD_STEP_SIZE - EPSILON
@@ -59,8 +57,7 @@ class ShortestPathFollower:
 
         self._mode = (
             "geodesic_path"
-            if getattr(sim, "get_straight_shortest_path_points", None)
-            is not None
+            if getattr(sim, "get_straight_shortest_path_points", None) is not None
             else "greedy"
         )
         self._return_one_hot = return_one_hot
@@ -85,9 +82,7 @@ class ShortestPathFollower:
             return self._get_return_value(SimulatorActions.MOVE_FORWARD)
         return self._step_along_grad(max_grad_dir)
 
-    def _step_along_grad(
-        self, grad_dir: np.quaternion
-    ) -> Union[int, np.array]:
+    def _step_along_grad(self, grad_dir: np.quaternion) -> Union[int, np.array]:
         current_state = self._sim.get_agent_state()
         alpha = angle_between_quaternions(grad_dir, current_state.rotation)
         if alpha <= np.deg2rad(self._sim.config.TURN_ANGLE) + EPSILON:
@@ -107,9 +102,7 @@ class ShortestPathFollower:
             return self._get_return_value(best_turn)
 
     def _reset_agent_state(self, state: habitat_sim.AgentState) -> None:
-        self._sim.set_agent_state(
-            state.position, state.rotation, reset_sensors=False
-        )
+        self._sim.set_agent_state(state.position, state.rotation, reset_sensors=False)
 
     def _geo_dist(self, goal_pos: np.array) -> float:
         return self._sim.geodesic_distance(
@@ -133,8 +126,7 @@ class ShortestPathFollower:
                 self._sim.forward_vector,
                 points[1]
                 - points[0]
-                + EPSILON
-                * np.cross(self._sim.up_vector, self._sim.forward_vector),
+                + EPSILON * np.cross(self._sim.up_vector, self._sim.forward_vector),
             )
             max_grad_dir.x = 0
             max_grad_dir = np.normalized(max_grad_dir)

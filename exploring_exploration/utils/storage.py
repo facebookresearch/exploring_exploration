@@ -259,7 +259,7 @@ class RolloutStoragePPO(object):
                 old_action_log_probs_batch,
                 adv_targ,
                 T,
-                N
+                N,
             )
 
     def reset(self):

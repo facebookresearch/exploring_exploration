@@ -60,9 +60,7 @@ class NavRLEnv(habitat.RLEnv):
     def _distance_target(self):
         current_position = self._env.sim.get_agent_state().position.tolist()
         target_position = self._env.current_episode.goals[0].position
-        distance = self._env.sim.geodesic_distance(
-            current_position, target_position
-        )
+        distance = self._env.sim.geodesic_distance(current_position, target_position)
         return distance
 
     def _episode_success(self):
@@ -105,10 +103,10 @@ class PoseRLEnv(habitat.RLEnv):
         if not done:
             # Optimization: do not return these keys after the 1st step.
             for key in [
-                'pose_estimation_rgb',
-                'pose_estimation_depth',
-                'pose_estimation_reg',
-                'pose_estimation_mask'
+                "pose_estimation_rgb",
+                "pose_estimation_depth",
+                "pose_estimation_reg",
+                "pose_estimation_mask",
             ]:
                 _ = obs.pop(key, None)
 
@@ -134,10 +132,10 @@ class PoseRLEnv(habitat.RLEnv):
     def get_info(self, observations):
         metrics = self.habitat_env.get_metrics()
         environment_statistics = {
-            'episode_id': self.habitat_env.current_episode.episode_id,
-            'scene_id': self.habitat_env.current_episode.scene_id
+            "episode_id": self.habitat_env.current_episode.episode_id,
+            "scene_id": self.habitat_env.current_episode.scene_id,
         }
-        metrics['environment_statistics'] = environment_statistics
+        metrics["environment_statistics"] = environment_statistics
         return metrics
 
 
@@ -151,8 +149,7 @@ class ExpNavRLEnv(habitat.RLEnv):
         self._episode_distance_covered = None
         self.T_exp = config_env.ENVIRONMENT.T_EXP
         self.T_nav = config_env.ENVIRONMENT.T_NAV
-        assert(self.T_exp + self.T_nav == \
-                config_env.ENVIRONMENT.MAX_EPISODE_STEPS)
+        assert self.T_exp + self.T_nav == config_env.ENVIRONMENT.MAX_EPISODE_STEPS
         super().__init__(config_env, dataset)
 
     def reset(self):
@@ -171,9 +168,9 @@ class ExpNavRLEnv(habitat.RLEnv):
         observations, reward, done, info = super().step(action)
         if self._env._elapsed_steps == self.T_exp:
             observations = self._respawn_agent()
-            info['finished_exploration'] = True
+            info["finished_exploration"] = True
         else:
-            info['finished_exploration'] = False
+            info["finished_exploration"] = False
 
         return observations, reward, done, info
 
@@ -181,9 +178,7 @@ class ExpNavRLEnv(habitat.RLEnv):
         position = self.habitat_env.current_episode.start_nav_position
         rotation = self.habitat_env.current_episode.start_nav_rotation
         observations = self.habitat_env._sim.get_observations_at(
-            position,
-            rotation,
-            keep_agent_at_new_pose=True
+            position, rotation, keep_agent_at_new_pose=True
         )
 
         observations.update(
@@ -218,9 +213,7 @@ class ExpNavRLEnv(habitat.RLEnv):
     def _distance_target(self):
         current_position = self._env.sim.get_agent_state().position.tolist()
         target_position = self._env.current_episode.goals[0].position
-        distance = self._env.sim.geodesic_distance(
-            current_position, target_position
-        )
+        distance = self._env.sim.geodesic_distance(current_position, target_position)
         return distance
 
     def _episode_success(self):
@@ -233,16 +226,17 @@ class ExpNavRLEnv(habitat.RLEnv):
 
     def get_done(self, observations):
         done = False
-        if self._env._elapsed_steps >= self.T_exp \
-           and (self._env.episode_over or self._episode_success()):
+        if self._env._elapsed_steps >= self.T_exp and (
+            self._env.episode_over or self._episode_success()
+        ):
             done = True
         return done
 
     def get_info(self, observations):
         metrics = self.habitat_env.get_metrics()
         environment_statistics = {
-            'episode_id': self.habitat_env.current_episode.episode_id,
-            'scene_id': self.habitat_env.current_episode.scene_id
+            "episode_id": self.habitat_env.current_episode.episode_id,
+            "scene_id": self.habitat_env.current_episode.scene_id,
         }
-        metrics['environment_statistics'] = environment_statistics
+        metrics["environment_statistics"] = environment_statistics
         return metrics

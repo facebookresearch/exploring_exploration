@@ -91,8 +91,7 @@ _C.TASK.SP_ACTION_SENSOR.T_NAV = _C.ENVIRONMENT.T_NAV
 # -----------------------------------------------------------------------------
 _C.TASK.TOP_DOWN_MAP_EXP_NAV = CN()
 _C.TASK.TOP_DOWN_MAP_EXP_NAV.TYPE = "TopDownMapExpNav"
-_C.TASK.TOP_DOWN_MAP_EXP_NAV.MAX_EPISODE_STEPS = \
-        _C.ENVIRONMENT.MAX_EPISODE_STEPS
+_C.TASK.TOP_DOWN_MAP_EXP_NAV.MAX_EPISODE_STEPS = _C.ENVIRONMENT.MAX_EPISODE_STEPS
 _C.TASK.TOP_DOWN_MAP_EXP_NAV.T_EXP = _C.ENVIRONMENT.T_EXP
 _C.TASK.TOP_DOWN_MAP_EXP_NAV.T_NAV = _C.ENVIRONMENT.T_NAV
 _C.TASK.TOP_DOWN_MAP_EXP_NAV.MAP_PADDING = 3
@@ -117,9 +116,7 @@ _C.SIMULATOR = CN()
 _C.SIMULATOR.TYPE = "Sim-v1"
 _C.SIMULATOR.ACTION_SPACE_CONFIG = "v2"
 _C.SIMULATOR.FORWARD_STEP_SIZE = 0.25  # in metres
-_C.SIMULATOR.SCENE = (
-    "data/scene_datasets/habitat-test-scenes/" "van-gogh-room.glb"
-)
+_C.SIMULATOR.SCENE = "data/scene_datasets/habitat-test-scenes/" "van-gogh-room.glb"
 _C.SIMULATOR.SEED = _C.SEED
 _C.SIMULATOR.TURN_ANGLE = 10  # angle to rotate left or right in degrees
 _C.SIMULATOR.TILT_ANGLE = 15  # angle to tilt the camera up or down in degrees
@@ -166,8 +163,7 @@ _C.SIMULATOR.COARSE_OCC_SENSOR.TYPE = "HabitatSimCoarseOccSensor"
 # # HIGHRES-COARSE-OCCUPANCY SENSOR
 # -----------------------------------------------------------------------------
 _C.SIMULATOR.HIGHRES_COARSE_OCC_SENSOR = SENSOR.clone()
-_C.SIMULATOR.HIGHRES_COARSE_OCC_SENSOR.TYPE = \
-        "HabitatSimHighResCoarseOccSensor"
+_C.SIMULATOR.HIGHRES_COARSE_OCC_SENSOR.TYPE = "HabitatSimHighResCoarseOccSensor"
 # -----------------------------------------------------------------------------
 # # OCCUPANCY MAPS
 # -----------------------------------------------------------------------------
@@ -185,13 +181,13 @@ _C.SIMULATOR.OCCUPANCY_MAPS.GET_PROJ_LOC_MAP = False
 _C.SIMULATOR.OCCUPANCY_MAPS.GET_HIGHRES_LOC_MAP = True
 _C.SIMULATOR.OCCUPANCY_MAPS.USE_GT_OCC_MAP = False
 _C.SIMULATOR.OCCUPANCY_MAPS.MEASURE_NOISE_FREE_AREA = False
-_C.SIMULATOR.OCCUPANCY_MAPS.COVERAGE_NOVELTY_POOLING = 'mean'
+_C.SIMULATOR.OCCUPANCY_MAPS.COVERAGE_NOVELTY_POOLING = "mean"
 # -----------------------------------------------------------------------------
 # # OBJECT ANNOTATIONS
 # -----------------------------------------------------------------------------
 _C.SIMULATOR.OBJECT_ANNOTATIONS = CN()
 _C.SIMULATOR.OBJECT_ANNOTATIONS.IS_AVAILABLE = False
-_C.SIMULATOR.OBJECT_ANNOTATIONS.PATH = './'
+_C.SIMULATOR.OBJECT_ANNOTATIONS.PATH = "./"
 # -----------------------------------------------------------------------------
 # # IMAGE GOAL SENSOR
 # -----------------------------------------------------------------------------
@@ -273,8 +269,7 @@ _C.DATASET.SHUFFLE_DATASET = True
 
 
 def get_config_exp_nav(
-    config_paths: Optional[Union[List[str], str]] = None,
-    opts: Optional[list] = None,
+    config_paths: Optional[Union[List[str], str]] = None, opts: Optional[list] = None,
 ) -> CN:
     r"""Create a unified config with default values overwritten by values from
     `config_paths` and overwritten by options from `opts`.
@@ -301,4 +296,3 @@ def get_config_exp_nav(
 
     config.freeze()
     return config
-

@@ -145,15 +145,15 @@ def main(args):
         max_no_improvement=20,
         verbose=0,
     )
-    save_h5_path = os.path.join(args.save_dir, f"clusters_{args.num_clusters:05d}_data.h5")
+    save_h5_path = os.path.join(
+        args.save_dir, f"clusters_{args.num_clusters:05d}_data.h5"
+    )
     if os.path.isfile(save_h5_path):
-        print('========> Loading existing clusters!')
-        h5file = h5py.File(
-            os.path.join(save_h5_path), 'r'
-        )
-        train_cluster_centroids = np.array(h5file['cluster_centroids'])
+        print("========> Loading existing clusters!")
+        h5file = h5py.File(os.path.join(save_h5_path), "r")
+        train_cluster_centroids = np.array(h5file["cluster_centroids"])
         kmeans.cluster_centers_ = train_cluster_centroids
-        train_cluster_assignments = kmeans.predict(train_image_features) # (N, )
+        train_cluster_assignments = kmeans.predict(train_image_features)  # (N, )
         h5file.close()
     else:
         kmeans.fit(train_image_features)
@@ -179,8 +179,7 @@ def main(args):
         valid_images = []
         for path in valid_image_paths[:100]:
             img = cv2.resize(
-                np.flip(cv2.imread(path), axis=2),
-                (args.image_size, args.image_size),
+                np.flip(cv2.imread(path), axis=2), (args.image_size, args.image_size),
             )
             valid_images.append(img)
         valid_images = (
@@ -193,10 +192,10 @@ def main(args):
             tbwriter.add_images(f"Cluster #{i:05d}", valid_images, 0)
 
     h5file = h5py.File(
-        os.path.join(args.save_dir, f"clusters_{args.num_clusters:05d}_data.h5"), 'a'
+        os.path.join(args.save_dir, f"clusters_{args.num_clusters:05d}_data.h5"), "a"
     )
 
-    if 'cluster_centroids' not in h5file.keys():
+    if "cluster_centroids" not in h5file.keys():
         h5file.create_dataset("cluster_centroids", data=train_cluster_centroids)
     for i in range(args.num_clusters):
         if f"cluster_{i}/images" not in h5file.keys():
@@ -217,9 +216,7 @@ def main(args):
             ).numpy()
 
         # Find the top-K matching centroids
-        topk_matches = np.argpartition(test_dot_centroids, -5, axis=1)[
-            :, -5:
-        ]  # (N, 5)
+        topk_matches = np.argpartition(test_dot_centroids, -5, axis=1)[:, -5:]  # (N, 5)
 
         # Write the test nearest neighbors to tensorboard
         tbwriter = SummaryWriter(

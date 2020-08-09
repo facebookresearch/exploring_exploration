@@ -43,9 +43,7 @@ class EQAEpisode(NavigationEpisode):
         question: question related to goal object.
     """
 
-    question: QuestionData = attr.ib(
-        default=None, validator=not_none_validator
-    )
+    question: QuestionData = attr.ib(default=None, validator=not_none_validator)
 
 
 class QuestionSensor(Sensor):
@@ -56,10 +54,7 @@ class QuestionSensor(Sensor):
         self.observation_space = spaces.Discrete(0)
 
     def _get_observation(
-        self,
-        observations: Dict[str, Observations],
-        episode: EQAEpisode,
-        **kwargs
+        self, observations: Dict[str, Observations], episode: EQAEpisode, **kwargs
     ):
         return episode.question.question_text
 
@@ -75,10 +70,7 @@ class AnswerSensor(Sensor):
         self.observation_space = spaces.Discrete(0)
 
     def _get_observation(
-        self,
-        observations: Dict[str, Observations],
-        episode: EQAEpisode,
-        **kwargs
+        self, observations: Dict[str, Observations], episode: EQAEpisode, **kwargs
     ):
         return episode.question.answer_text
 

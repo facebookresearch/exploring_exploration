@@ -40,18 +40,14 @@ def test_sim_trajectory():
             state = sim.get_agent_state()
             assert (
                 np.allclose(
-                    np.array(
-                        test_trajectory["positions"][i], dtype=np.float32
-                    ),
+                    np.array(test_trajectory["positions"][i], dtype=np.float32),
                     state.position,
                 )
                 is True
             ), "mismatch in position " "at step {}".format(i)
             assert (
                 np.allclose(
-                    np.array(
-                        test_trajectory["rotations"][i], dtype=np.float32
-                    ),
+                    np.array(test_trajectory["rotations"][i], dtype=np.float32),
                     np.array([*state.rotation.imag, state.rotation.real]),
                 )
                 is True
@@ -61,9 +57,7 @@ def test_sim_trajectory():
             dist_to_obs = sim.distance_to_closest_obstacle(
                 state.position, max_search_radius
             )
-            assert np.isclose(
-                dist_to_obs, test_trajectory["distances_to_obstacles"][i]
-            )
+            assert np.isclose(dist_to_obs, test_trajectory["distances_to_obstacles"][i])
 
         assert sim.action_space.contains(action)
 

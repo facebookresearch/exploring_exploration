@@ -112,14 +112,10 @@ class VectorEnv:
 
         for write_fn in self._connection_write_fns:
             write_fn((OBSERVATION_SPACE_COMMAND, None))
-        self.observation_spaces = [
-            read_fn() for read_fn in self._connection_read_fns
-        ]
+        self.observation_spaces = [read_fn() for read_fn in self._connection_read_fns]
         for write_fn in self._connection_write_fns:
             write_fn((ACTION_SPACE_COMMAND, None))
-        self.action_spaces = [
-            read_fn() for read_fn in self._connection_read_fns
-        ]
+        self.action_spaces = [read_fn() for read_fn in self._connection_read_fns]
         self._paused = []
 
     @property
@@ -150,9 +146,7 @@ class VectorEnv:
             while command != CLOSE_COMMAND:
                 if command == STEP_COMMAND:
                     # different step methods for habitat.RLEnv and habitat.Env
-                    if isinstance(env, habitat.RLEnv) or isinstance(
-                        env, gym.Env
-                    ):
+                    if isinstance(env, habitat.RLEnv) or isinstance(env, gym.Env):
                         # habitat.RLEnv
                         observations, reward, done, info = env.step(data)
                         if auto_reset_done and done:
@@ -374,10 +368,7 @@ class VectorEnv:
         self._paused = []
 
     def call_at(
-        self,
-        index: int,
-        function_name: str,
-        function_args: Optional[List[Any]] = None,
+        self, index: int, function_name: str, function_args: Optional[List[Any]] = None,
     ) -> Any:
         r"""Calls a function (which is passed by name) on the selected env and
         returns the result.
@@ -399,9 +390,7 @@ class VectorEnv:
         return result
 
     def call(
-        self,
-        function_names: List[str],
-        function_args_list: Optional[List[Any]] = None,
+        self, function_names: List[str], function_args_list: Optional[List[Any]] = None,
     ) -> List[Any]:
         r"""Calls a list of functions (which are passed by name) on the
         corresponding env (by index).
@@ -420,9 +409,7 @@ class VectorEnv:
             function_args_list = [None] * len(function_names)
         assert len(function_names) == len(function_args_list)
         func_args = zip(function_names, function_args_list)
-        for write_fn, func_args_on in zip(
-            self._connection_write_fns, func_args
-        ):
+        for write_fn, func_args_on in zip(self._connection_write_fns, func_args):
             write_fn((CALL_COMMAND, func_args_on))
         results = []
         for read_fn in self._connection_read_fns:
@@ -430,9 +417,7 @@ class VectorEnv:
         self._is_waiting = False
         return results
 
-    def render(
-        self, mode: str = "human", *args, **kwargs
-    ) -> Union[np.ndarray, None]:
+    def render(self, mode: str = "human", *args, **kwargs) -> Union[np.ndarray, None]:
         r"""Render observations from all environments in a tiled image.
         """
         for write_fn in self._connection_write_fns:

@@ -172,6 +172,5 @@ class AVDReconEnv(AVDPoseBaseEnv):
 
 
 register(
-        id='avd-recon-v0',
-        entry_point='gym_avd.envs:AVDReconEnv',
+    id="avd-recon-v0", entry_point="gym_avd.envs:AVDReconEnv",
 )

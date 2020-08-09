@@ -102,9 +102,7 @@ _C.SIMULATOR = CN()
 _C.SIMULATOR.TYPE = "Sim-v0"
 _C.SIMULATOR.ACTION_SPACE_CONFIG = "v0"
 _C.SIMULATOR.FORWARD_STEP_SIZE = 0.25  # in metres
-_C.SIMULATOR.SCENE = (
-    "data/scene_datasets/habitat-test-scenes/" "van-gogh-room.glb"
-)
+_C.SIMULATOR.SCENE = "data/scene_datasets/habitat-test-scenes/" "van-gogh-room.glb"
 _C.SIMULATOR.SEED = _C.SEED
 _C.SIMULATOR.TURN_ANGLE = 10  # angle to rotate left or right in degrees
 _C.SIMULATOR.TILT_ANGLE = 15  # angle to tilt the camera up or down in degrees
@@ -156,8 +154,7 @@ _C.SIMULATOR.PROJ_OCC_SENSOR.TYPE = "HabitatSimProjOccSensor"
 # # HIGHRES-COARSE-OCCUPANCY SENSOR
 # -----------------------------------------------------------------------------
 _C.SIMULATOR.HIGHRES_COARSE_OCC_SENSOR = SENSOR.clone()
-_C.SIMULATOR.HIGHRES_COARSE_OCC_SENSOR.TYPE = \
-        "HabitatSimHighResCoarseOccSensor"
+_C.SIMULATOR.HIGHRES_COARSE_OCC_SENSOR.TYPE = "HabitatSimHighResCoarseOccSensor"
 # -----------------------------------------------------------------------------
 # # OCCUPANCY MAPS
 # -----------------------------------------------------------------------------
@@ -179,7 +176,7 @@ _C.SIMULATOR.OCCUPANCY_MAPS.USE_GT_OCC_MAP = False
 # -----------------------------------------------------------------------------
 _C.SIMULATOR.OBJECT_ANNOTATIONS = CN()
 _C.SIMULATOR.OBJECT_ANNOTATIONS.IS_AVAILABLE = False
-_C.SIMULATOR.OBJECT_ANNOTATIONS.PATH = './'
+_C.SIMULATOR.OBJECT_ANNOTATIONS.PATH = "./"
 # -----------------------------------------------------------------------------
 # AGENT
 # -----------------------------------------------------------------------------
@@ -221,8 +218,7 @@ _C.DATASET.SHUFFLE_DATASET = True
 
 
 def get_config(
-    config_paths: Optional[Union[List[str], str]] = None,
-    opts: Optional[list] = None,
+    config_paths: Optional[Union[List[str], str]] = None, opts: Optional[list] = None,
 ) -> CN:
     r"""Create a unified config with default values overwritten by values from
     `config_paths` and overwritten by options from `opts`.

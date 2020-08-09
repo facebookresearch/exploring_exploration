@@ -1197,9 +1197,11 @@ class HabitatSimOcc(HabitatSim):
             np.putmask(noise_free_out_mat, occupied_mask_nf, 1)
         # ================== Measure area seen (m^2) in the map =====================
         if self.occupancy_info["measure_noise_free_area"]:
-            seen_area = float(np.count_nonzero(noise_free_out_mat > 0)) * (grid_size)**2
+            seen_area = (
+                float(np.count_nonzero(noise_free_out_mat > 0)) * (grid_size) ** 2
+            )
         else:
-            seen_area = float(np.count_nonzero(out_mat > 0)) * (grid_size)**2
+            seen_area = float(np.count_nonzero(out_mat > 0)) * (grid_size) ** 2
         # ================= Compute local depth projection ====================
         if self.occupancy_info["get_proj_loc_map"]:
             proj_out_mat.fill(0)

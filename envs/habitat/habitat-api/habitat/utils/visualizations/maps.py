@@ -17,10 +17,7 @@ from habitat.utils.visualizations import utils
 
 AGENT_SPRITE = imageio.imread(
     os.path.join(
-        os.path.dirname(__file__),
-        "assets",
-        "maps_topdown_agent_sprite",
-        "100x100.png",
+        os.path.dirname(__file__), "assets", "maps_topdown_agent_sprite", "100x100.png",
     )
 )
 AGENT_SPRITE = np.ascontiguousarray(np.flipud(AGENT_SPRITE))
@@ -40,11 +37,11 @@ TOP_DOWN_MAP_COLORS[10:] = cv2.applyColorMap(
 ).squeeze(1)[:, ::-1]
 TOP_DOWN_MAP_COLORS[MAP_INVALID_POINT] = [255, 255, 255]
 TOP_DOWN_MAP_COLORS[MAP_VALID_POINT] = [50, 170, 50]
-#TOP_DOWN_MAP_COLORS[MAP_VALID_POINT] = [150, 150, 150]
+# TOP_DOWN_MAP_COLORS[MAP_VALID_POINT] = [150, 150, 150]
 TOP_DOWN_MAP_COLORS[MAP_BORDER_INDICATOR] = [50, 50, 50]
 TOP_DOWN_MAP_COLORS[MAP_SOURCE_POINT_INDICATOR] = [0, 0, 200]
 TOP_DOWN_MAP_COLORS[MAP_TARGET_POINT_INDICATOR] = [200, 0, 0]
-#TOP_DOWN_MAP_COLORS[MAP_SHORTEST_PATH_COLOR] = [0, 200, 0]
+# TOP_DOWN_MAP_COLORS[MAP_SHORTEST_PATH_COLOR] = [0, 200, 0]
 TOP_DOWN_MAP_COLORS[MAP_SHORTEST_PATH_COLOR] = [75, 0, 130]
 
 
@@ -72,13 +69,9 @@ def draw_agent(
     # the agent sprite size should stay the same.
     initial_agent_size = AGENT_SPRITE.shape[0]
     new_size = rotated_agent.shape[0]
-    agent_size_px = max(
-        1, int(agent_radius_px * 2 * new_size / initial_agent_size)
-    )
+    agent_size_px = max(1, int(agent_radius_px * 2 * new_size / initial_agent_size))
     resized_agent = cv2.resize(
-        rotated_agent,
-        (agent_size_px, agent_size_px),
-        interpolation=cv2.INTER_LINEAR,
+        rotated_agent, (agent_size_px, agent_size_px), interpolation=cv2.INTER_LINEAR,
     )
     utils.paste_overlapping_image(image, resized_agent, agent_center_coord)
     return image
@@ -137,9 +130,7 @@ def pointnav_draw_target_birdseye_view(
     )
     movement_scale = 1.0 / goal_distance_padding
     half_res = resolution_px // 2
-    im_position = np.full(
-        (resolution_px, resolution_px, 3), 255, dtype=np.uint8
-    )
+    im_position = np.full((resolution_px, resolution_px, 3), 255, dtype=np.uint8)
 
     # Draw bands:
     for scale, color in zip(target_band_radii, target_band_colors):
@@ -240,11 +231,7 @@ def from_grid(
 
 
 def from_grid_v2(
-    grid_x: int,
-    grid_y: int,
-    x_min: float,
-    y_min: float,
-    map_scale: float,
+    grid_x: int, grid_y: int, x_min: float, y_min: float, map_scale: float,
 ) -> Tuple[float, float]:
     r"""Inverse of to_grid_v2 function. Return real world coordinate from
     gridworld assuming top-left corner is the origin. This differs from
@@ -339,12 +326,8 @@ def get_topdown_map(
             realworld_x, realworld_y = from_grid(
                 ii, jj, COORDINATE_MIN, COORDINATE_MAX, map_resolution
             )
-            valid_point = sim.is_navigable(
-                [realworld_x, start_height, realworld_y]
-            )
-            top_down_map[ii, jj] = (
-                MAP_VALID_POINT if valid_point else MAP_INVALID_POINT
-            )
+            valid_point = sim.is_navigable([realworld_x, start_height, realworld_y])
+            top_down_map[ii, jj] = MAP_VALID_POINT if valid_point else MAP_INVALID_POINT
 
     # Draw border if necessary
     if draw_border:
@@ -360,9 +343,7 @@ def get_topdown_map(
             min(range_y[-1] + border_padding + 1, top_down_map.shape[1]),
         )
 
-        _outline_border(
-            top_down_map[range_x[0] : range_x[1], range_y[0] : range_y[1]]
-        )
+        _outline_border(top_down_map[range_x[0] : range_x[1], range_y[0] : range_y[1]])
     return top_down_map
 
 
@@ -391,7 +372,10 @@ def get_topdown_map_v2(
     """
 
     x_min, x_max, y_min, y_max = map_extents
-    map_resolution = (int((x_max - x_min)/map_scale), int((y_max - y_min)/map_scale))
+    map_resolution = (
+        int((x_max - x_min) / map_scale),
+        int((y_max - y_min) / map_scale),
+    )
     top_down_map = np.zeros(map_resolution, dtype=np.uint8)
 
     start_height = sim.get_agent_state().position[1]
@@ -404,9 +388,7 @@ def get_topdown_map_v2(
         # Check if on same level as original
         if np.abs(start_height - point[1]) > 0.5:
             continue
-        g_x, g_y = to_grid_v2(
-                       point[0], point[2], x_min, y_min, map_scale
-                   )
+        g_x, g_y = to_grid_v2(point[0], point[2], x_min, y_min, map_scale)
         range_x = (min(range_x[0], g_x), max(range_x[1], g_x))
         range_y = (min(range_y[0], g_y), max(range_y[1], g_y))
 
@@ -416,20 +398,15 @@ def get_topdown_map_v2(
     # Search over grid for valid points.
     for ii in range(range_x[0], range_x[1]):
         for jj in range(range_y[0], range_y[1]):
-            realworld_x, realworld_y = from_grid_v2(
-                ii, jj, x_min, y_min, map_scale
-            )
-            valid_point = sim.is_navigable(
-                [realworld_x, start_height, realworld_y]
-            )
-            top_down_map[ii, jj] = (
-                MAP_VALID_POINT if valid_point else MAP_INVALID_POINT
-            )
+            realworld_x, realworld_y = from_grid_v2(ii, jj, x_min, y_min, map_scale)
+            valid_point = sim.is_navigable([realworld_x, start_height, realworld_y])
+            top_down_map[ii, jj] = MAP_VALID_POINT if valid_point else MAP_INVALID_POINT
 
     return top_down_map
 
+
 FOG_OF_WAR_COLOR_DESAT = np.array([[0.2], [1.0]])
-#FOG_OF_WAR_COLOR_DESAT = np.array([[0.4], [1.0]])
+# FOG_OF_WAR_COLOR_DESAT = np.array([[0.4], [1.0]])
 
 
 def colorize_topdown_map(
@@ -451,18 +428,15 @@ def colorize_topdown_map(
         # get revealed.
         desat_mask = top_down_map != MAP_INVALID_POINT
 
-        _map[desat_mask] = (
-            _map * FOG_OF_WAR_COLOR_DESAT[fog_of_war_mask]
-        ).astype(np.uint8)[desat_mask]
+        _map[desat_mask] = (_map * FOG_OF_WAR_COLOR_DESAT[fog_of_war_mask]).astype(
+            np.uint8
+        )[desat_mask]
 
     return _map
 
 
 def draw_path(
-    top_down_map: np.ndarray,
-    path_points: List[Tuple],
-    color: int,
-    thickness: int = 2,
+    top_down_map: np.ndarray, path_points: List[Tuple], color: int, thickness: int = 2,
 ) -> None:
     r"""Draw path on top_down_map (in place) with specified color.
         Args:

@@ -34,9 +34,7 @@ def get_action_shortest_path(
         state = sim.get_agent_state()
         shortest_path.append(
             ShortestPathPoint(
-                state.position.tolist(),
-                quaternion_to_list(state.rotation),
-                action,
+                state.position.tolist(), quaternion_to_list(state.rotation), action,
             )
         )
         sim.step(action)

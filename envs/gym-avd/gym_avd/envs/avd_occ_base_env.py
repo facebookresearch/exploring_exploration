@@ -267,7 +267,7 @@ class AVDOccBaseEnv(AVDBaseEnv):
             1 / np.sqrt(np.clip(count_out_mat, 1.0, math.inf)), mask=1 - seen_mask
         )
         # =================== Measure area seen (m^2) in the map ====================
-        seen_area = float(np.sum(out_mat > 0).item()) * (self.map_scale / 1000.0)**2
+        seen_area = float(np.sum(out_mat > 0).item()) * (self.map_scale / 1000.0) ** 2
         self.seen_count_reward = inv_count_out_mat.mean().item()
 
         return seen_area
@@ -579,6 +579,5 @@ class AVDOccBaseEnv(AVDBaseEnv):
 
 
 register(
-        id='avd-occ-base-v0',
-        entry_point='gym_avd.envs:AVDOccBaseEnv',
+    id="avd-occ-base-v0", entry_point="gym_avd.envs:AVDOccBaseEnv",
 )

@@ -62,9 +62,7 @@ class Metrics(dict):
     """
 
     def __init__(self, measures: Dict[str, Measure]) -> None:
-        data = [
-            (uuid, measure.get_metric()) for uuid, measure in measures.items()
-        ]
+        data = [(uuid, measure.get_metric()) for uuid, measure in measures.items()]
         super().__init__(data)
 
 

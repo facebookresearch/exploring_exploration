@@ -45,15 +45,15 @@ class PointNavDatasetV1(Dataset):
         episodes.
         """
         assert PointNavDatasetV1.check_config_paths_exist(config)
-        dataset_dir = os.path.dirname(
-            config.DATA_PATH.format(split=config.SPLIT)
-        )
+        dataset_dir = os.path.dirname(config.DATA_PATH.format(split=config.SPLIT))
 
         cfg = config.clone()
         cfg.defrost()
         cfg.CONTENT_SCENES = []
         dataset = PointNavDatasetV1(cfg)
-        return PointNavDatasetV1._get_scenes_from_folder( content_scenes_path=dataset.content_scenes_path, dataset_dir=dataset_dir,)
+        return PointNavDatasetV1._get_scenes_from_folder(
+            content_scenes_path=dataset.content_scenes_path, dataset_dir=dataset_dir,
+        )
 
     @staticmethod
     def _get_scenes_from_folder(content_scenes_path, dataset_dir):
@@ -88,8 +88,7 @@ class PointNavDatasetV1(Dataset):
         scenes = config.CONTENT_SCENES
         if ALL_SCENES_MASK in scenes:
             scenes = PointNavDatasetV1._get_scenes_from_folder(
-                content_scenes_path=self.content_scenes_path,
-                dataset_dir=dataset_dir,
+                content_scenes_path=self.content_scenes_path, dataset_dir=dataset_dir,
             )
 
         for scene in scenes:
@@ -101,9 +100,7 @@ class PointNavDatasetV1(Dataset):
 
         self.sample_episodes(config.NUM_EPISODE_SAMPLE)
 
-    def from_json(
-        self, json_str: str, scenes_dir: Optional[str] = None
-    ) -> None:
+    def from_json(self, json_str: str, scenes_dir: Optional[str] = None) -> None:
         deserialized = json.loads(json_str)
         if CONTENT_SCENES_PATH_FIELD in deserialized:
             self.content_scenes_path = deserialized[CONTENT_SCENES_PATH_FIELD]

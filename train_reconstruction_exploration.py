@@ -109,16 +109,14 @@ def main():
         cluster_images = np.array(
             clusters_h5[f"cluster_{i}/images"]
         )  # (K, C, H, W) torch Tensor
-        cluster_images = rearrange(cluster_images, 'k c h w -> k h w c')
+        cluster_images = rearrange(cluster_images, "k c h w -> k h w c")
         cluster_images = (cluster_images * 255.0).astype(np.uint8)
         clusters2images[i] = cluster_images  # (K, H, W, C)
     clusters_h5.close()
 
     # =================== Create models ====================
     decoder = FeatureReconstructionModule(
-        args.nclusters,
-        args.nclusters,
-        nlayers=args.n_transformer_layers,
+        args.nclusters, args.nclusters, nlayers=args.n_transformer_layers,
     )
     feature_network = FeatureNetwork()
     pose_encoder = PoseEncoder()
@@ -149,9 +147,9 @@ def main():
     # Remove DataParallel related strings
     new_decoder_state, new_pose_encoder_state = {}, {}
     for k, v in decoder_state.items():
-        new_decoder_state[k.replace('module.', '')] = v
+        new_decoder_state[k.replace("module.", "")] = v
     for k, v in pose_encoder_state.items():
-        new_pose_encoder_state[k.replace('module.', '')] = v
+        new_pose_encoder_state[k.replace("module.", "")] = v
     decoder.load_state_dict(new_decoder_state)
     pose_encoder.load_state_dict(new_pose_encoder_state)
     decoder = nn.DataParallel(decoder, dim=1)
@@ -267,9 +265,7 @@ def main():
             tgt_feat = torch.matmul(
                 tgt_feat, cluster_centroids_t
             )  # (N*nRef, nclusters)
-        tgt_feat = unflatten_two(
-            tgt_feat, NPROC, NREF
-        )  # (N, nRef, nclusters)
+        tgt_feat = unflatten_two(tgt_feat, NPROC, NREF)  # (N, nRef, nclusters)
         rollouts_recon.obs_feats[0].copy_(obs_feat)
         rollouts_recon.obs_odometer[0].copy_(obs_odometer)
         rollouts_recon.tgt_poses.copy_(tgt_poses)
@@ -388,22 +384,26 @@ def main():
                     1
                 )  # / (tgt_masks.sum(dim=1) + 1e-8)
                 final_rec_rewards = rec_rewards - prev_rec_rewards
-                #if step == 0:
+                # if step == 0:
                 #    print(
                 #        "==============================================================="
                 #    )
                 # Ignore the exploration reward at T=0 since it will be a huge spike
-                if (("avd" in args.env_name) and (step != 0)) or \
-                   (("habitat" in args.env_name) and (step > 20)):
-                    #print(
+                if (("avd" in args.env_name) and (step != 0)) or (
+                    ("habitat" in args.env_name) and (step > 20)
+                ):
+                    # print(
                     #    "Rec rewards[0]: {:.2f}".format(final_rec_rewards[0, 0].item())
-                    #)
-                    reward_exploration += final_rec_rewards.cpu() * args.rec_reward_scale
+                    # )
+                    reward_exploration += (
+                        final_rec_rewards.cpu() * args.rec_reward_scale
+                    )
                     episode_rec_rewards += final_rec_rewards.cpu().numpy()
                 prev_rec_rewards = rec_rewards
 
             overall_reward = (
-                reward * (1 - args.reward_scale) + reward_exploration * args.reward_scale
+                reward * (1 - args.reward_scale)
+                + reward_exploration * args.reward_scale
             )
 
             # Update statistics
@@ -468,13 +468,12 @@ def main():
             encoder_state = encoder.state_dict()
             actor_critic_state = actor_critic.state_dict()
             torch.save(
-                [encoder_state, actor_critic_state, j],
-                f"{save_path}/ckpt.latest.pth",
+                [encoder_state, actor_critic_state, j], f"{save_path}/ckpt.latest.pth",
             )
             if args.save_unique:
                 torch.save(
                     [encoder_state, actor_critic_state, j],
-                    f"{save_path}/ckpt.{(j+1):07d}.pth"
+                    f"{save_path}/ckpt.{(j+1):07d}.pth",
                 )
 
         # =================== Logging data ====================
@@ -540,9 +539,7 @@ def main():
             eval_config["use_collision_embedding"] = args.use_collision_embedding
             eval_config["cluster_centroids"] = cluster_centroids
             eval_config["clusters2images"] = clusters2images
-            eval_config["rec_loss_fn"] = (
-                rec_loss_fn_classify
-            )
+            eval_config["rec_loss_fn"] = rec_loss_fn_classify
             eval_config[
                 "vis_save_dir"
             ] = f"{args.save_dir}/policy_vis/update_{(j+1):05d}"

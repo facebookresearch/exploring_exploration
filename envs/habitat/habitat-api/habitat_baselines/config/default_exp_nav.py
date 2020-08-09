@@ -71,16 +71,13 @@ _C.TRAINER.RL.PPO.eval_ckpt_path_or_dir = "data/checkpoints"
 # ORBSLAM2 BASELINE
 # -----------------------------------------------------------------------------
 _C.TRAINER.ORBSLAM2 = CN()
-_C.TRAINER.ORBSLAM2.SLAM_VOCAB_PATH = (
-    "habitat_baselines/slambased/data/ORBvoc.txt"
-)
+_C.TRAINER.ORBSLAM2.SLAM_VOCAB_PATH = "habitat_baselines/slambased/data/ORBvoc.txt"
 _C.TRAINER.ORBSLAM2.SLAM_SETTINGS_PATH = (
     "habitat_baselines/slambased/data/mp3d3_small1k.yaml"
 )
 _C.TRAINER.ORBSLAM2.MAP_CELL_SIZE = 0.1
 _C.TRAINER.ORBSLAM2.MAP_SIZE = 40
-_C.TRAINER.ORBSLAM2.CAMERA_HEIGHT = \
-        get_task_config().SIMULATOR.DEPTH_SENSOR.POSITION[1]
+_C.TRAINER.ORBSLAM2.CAMERA_HEIGHT = get_task_config().SIMULATOR.DEPTH_SENSOR.POSITION[1]
 _C.TRAINER.ORBSLAM2.BETA = 100
 _C.TRAINER.ORBSLAM2.H_OBSTACLE_MIN = 0.3 * _C.TRAINER.ORBSLAM2.CAMERA_HEIGHT
 _C.TRAINER.ORBSLAM2.H_OBSTACLE_MAX = 1.0 * _C.TRAINER.ORBSLAM2.CAMERA_HEIGHT
@@ -96,14 +93,11 @@ _C.TRAINER.ORBSLAM2.NEXT_WAYPOINT_TH = 0.5
 _C.TRAINER.ORBSLAM2.NUM_ACTIONS = 3
 _C.TRAINER.ORBSLAM2.DIST_TO_STOP = 0.05
 _C.TRAINER.ORBSLAM2.PLANNER_MAX_STEPS = 500
-_C.TRAINER.ORBSLAM2.DEPTH_DENORM = (
-    get_task_config().SIMULATOR.DEPTH_SENSOR.MAX_DEPTH
-)
+_C.TRAINER.ORBSLAM2.DEPTH_DENORM = get_task_config().SIMULATOR.DEPTH_SENSOR.MAX_DEPTH
 
 
 def get_config_exp_nav(
-    config_paths: Optional[Union[List[str], str]] = None,
-    opts: Optional[list] = None,
+    config_paths: Optional[Union[List[str], str]] = None, opts: Optional[list] = None,
 ) -> CN:
     r"""Create a unified config with default values overwritten by values from
     `config_paths` and overwritten by options from `opts`.

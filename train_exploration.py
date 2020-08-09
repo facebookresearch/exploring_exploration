@@ -261,7 +261,8 @@ def main():
                 smooth_coverage_tracker[proc] += smooth_coverage_reward
 
             overall_reward = (
-                reward * (1 - args.reward_scale) + reward_exploration * args.reward_scale
+                reward * (1 - args.reward_scale)
+                + reward_exploration * args.reward_scale
             )
 
             # Update statistics

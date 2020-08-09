@@ -24,6 +24,7 @@ from gym.envs.registration import register
 class AVDBaseEnv(gym.Env):
     """Implements the core task-independent functionality for AVD environments.
     """
+
     metadata = {"render.modes": ["human", "rgb"]}
 
     def __init__(self, WIDTH=224, HEIGHT=224, max_steps=None):
@@ -671,6 +672,5 @@ class AVDBaseEnv(gym.Env):
 
 
 register(
-        id='avd-base-v0',
-        entry_point='gym_avd.envs:AVDBaseEnv',
+    id="avd-base-v0", entry_point="gym_avd.envs:AVDBaseEnv",
 )

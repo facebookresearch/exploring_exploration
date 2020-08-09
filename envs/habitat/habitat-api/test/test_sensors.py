@@ -184,9 +184,7 @@ def test_static_pointgoal_sensor():
     )
 
     non_stop_actions = [
-        act
-        for act in range(env.action_space.n)
-        if act != SimulatorActions.STOP
+        act for act in range(env.action_space.n) if act != SimulatorActions.STOP
     ]
     env.reset()
     for _ in range(100):
@@ -229,9 +227,7 @@ def test_get_observations_at():
         ]
     )
     non_stop_actions = [
-        act
-        for act in range(env.action_space.n)
-        if act != SimulatorActions.STOP
+        act for act in range(env.action_space.n) if act != SimulatorActions.STOP
     ]
 
     obs = env.reset()
@@ -248,9 +244,7 @@ def test_get_observations_at():
             ):
                 assert not np.allclose(val, obs[key])
         obs_at_point = env.sim.get_observations_at(
-            start_state.position,
-            start_state.rotation,
-            keep_agent_at_new_pose=False,
+            start_state.position, start_state.rotation, keep_agent_at_new_pose=False,
         )
         for key, val in obs_at_point.items():
             assert np.allclose(val, obs[key])

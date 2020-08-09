@@ -18,7 +18,7 @@ from exploring_exploration.utils.reconstruction_eval import evaluate_reconstruct
 from exploring_exploration.models.reconstruction import (
     FeatureReconstructionModule,
     FeatureNetwork,
-    PoseEncoder
+    PoseEncoder,
 )
 from exploring_exploration.utils.reconstruction import rec_loss_fn_classify
 from tensorboardX import SummaryWriter
@@ -53,10 +53,18 @@ def main():
 
     args.feat_shape_sim = (512,)
     args.odometer_shape = (4,)  # (delta_y, delta_x, delta_head, delta_elev)
-    args.requires_policy = args.actor_type not in ["random", "oracle", "forward", "forward-plus", "frontier"]
+    args.requires_policy = args.actor_type not in [
+        "random",
+        "oracle",
+        "forward",
+        "forward-plus",
+        "frontier",
+    ]
     if "habitat" in args.env_name:
         if "CUDA_VISIBLE_DEVICES" in os.environ:
-            devices = [int(dev) for dev in os.environ["CUDA_VISIBLE_DEVICES"].split(",")]
+            devices = [
+                int(dev) for dev in os.environ["CUDA_VISIBLE_DEVICES"].split(",")
+            ]
             # Devices need to be indexed between 0 to N-1
             devices = [dev for dev in range(len(devices))]
         else:
@@ -104,9 +112,7 @@ def main():
 
     # =================== Create models ====================
     decoder = FeatureReconstructionModule(
-        args.nclusters,
-        args.nclusters,
-        nlayers=args.n_transformer_layers,
+        args.nclusters, args.nclusters, nlayers=args.n_transformer_layers,
     )
     feature_network = FeatureNetwork()
     feature_network = nn.DataParallel(feature_network, dim=0)
@@ -174,7 +180,7 @@ def main():
     eval_config["cluster_centroids"] = cluster_centroids
     eval_config["clusters2images"] = clusters2images
     eval_config["rec_loss_fn"] = rec_loss_fn_classify
-    eval_config["vis_save_dir"] = os.path.join(args.log_dir, 'visualizations')
+    eval_config["vis_save_dir"] = os.path.join(args.log_dir, "visualizations")
     eval_config["forward_action_id"] = 2 if "avd" in args.env_name else 0
     eval_config["turn_action_id"] = 0 if "avd" in args.env_name else 1
     if args.actor_type == "frontier":
@@ -201,8 +207,7 @@ def main():
     )
 
     json.dump(
-        per_episode_metrics,
-        open(os.path.join(args.log_dir, 'statistics.json'), "w")
+        per_episode_metrics, open(os.path.join(args.log_dir, "statistics.json"), "w")
     )
 
 

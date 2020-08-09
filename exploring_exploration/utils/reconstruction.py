@@ -56,9 +56,7 @@ def rec_loss_fn_classify(
 
     # Generate K-hot encoding
     k_hot_encoding = (
-        torch.zeros(bs, nclasses).to(device).scatter_(
-            1, topK_outputs.indices, 1.0
-        )
+        torch.zeros(bs, nclasses).to(device).scatter_(1, topK_outputs.indices, 1.0)
     )
 
     loss = multi_label_classification_loss(

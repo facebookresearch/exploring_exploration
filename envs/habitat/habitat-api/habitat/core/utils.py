@@ -26,19 +26,14 @@ def tile_images(images: List[np.ndarray]) -> np.ndarray:
     new_width = int(np.ceil(float(n_images) / new_height))
     # pad with empty images to complete the rectangle
     np_images = np.array(
-        images
-        + [images[0] * 0 for _ in range(n_images, new_height * new_width)]
+        images + [images[0] * 0 for _ in range(n_images, new_height * new_width)]
     )
     # img_HWhwc
-    out_image = np_images.reshape(
-        new_height, new_width, height, width, n_channels
-    )
+    out_image = np_images.reshape(new_height, new_width, height, width, n_channels)
     # img_HhWwc
     out_image = out_image.transpose(0, 2, 1, 3, 4)
     # img_Hh_Ww_c
-    out_image = out_image.reshape(
-        new_height * height, new_width * width, n_channels
-    )
+    out_image = out_image.reshape(new_height * height, new_width * width, n_channels)
     return out_image
 
 
@@ -52,7 +47,5 @@ class Singleton(type):
 
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(
-                *args, **kwargs
-            )
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]

@@ -195,9 +195,7 @@ texinfo_documents = [
     )
 ]
 
-github_doc_root = (
-    f"https://github.com/facebookresearch/habitat-api/blob/{version}/"
-)
+github_doc_root = f"https://github.com/facebookresearch/habitat-api/blob/{version}/"
 
 # At the bottom of conf.py
 def setup(app):

@@ -42,9 +42,7 @@ def compute_reconstruction_metrics(pred_scores, gt_scores, masks=None):
     metrics = {}
     per_sample_metrics = {}
     for k in [1, 2, 5, 10]:
-        per_sample_prec_at_k = precision_at_k(
-            pred_scores, gt_scores, k=k
-        )  # (N, )
+        per_sample_prec_at_k = precision_at_k(pred_scores, gt_scores, k=k)  # (N, )
         if masks is None:
             metrics[f"precision@{k}"] = per_sample_prec_at_k.mean().item()
             per_sample_metrics[f"precision@{k}"] = per_sample_prec_at_k.cpu().numpy()
@@ -176,9 +174,9 @@ def evaluate_reconstruction_oracle(
                 obs_odometer_exp = unsq_exp(
                     obs_odometer_curr, num_pose_refs, dim=2
                 )  # (L, N, nRef, 3)
-                obs_odometer_exp = obs_odometer_exp.view(-1, 3) # (L*N*nRef, 3)
+                obs_odometer_exp = obs_odometer_exp.view(-1, 3)  # (L*N*nRef, 3)
                 tgt_poses_exp = unsq_exp(tgt_poses, L, dim=0)  # (L, N, nRef, 3)
-                tgt_poses_exp = tgt_poses_exp.view(-1, 3) # (L*N*nRef, 3)
+                tgt_poses_exp = tgt_poses_exp.view(-1, 3)  # (L*N*nRef, 3)
                 obs_relpose = subtract_pose(
                     obs_odometer_exp, tgt_poses_exp
                 )  # (L*N*nRef, 3) --- (x, y, phi)
@@ -839,8 +837,10 @@ def evaluate_reconstruction(
                     :L, :, :3
                 ]  # (L, N, 3) --- (y, x, phi)
                 # Convert odometer readings tgt_pose's frame of reference
-                obs_odometer_exp = unsq_exp(obs_odometer_curr, nRef, dim=2)  # (L, N, nRef, 3)
-                obs_odometer_exp = obs_odometer_exp.view(-1, 3) # (L*N*nRef, 3)
+                obs_odometer_exp = unsq_exp(
+                    obs_odometer_curr, nRef, dim=2
+                )  # (L, N, nRef, 3)
+                obs_odometer_exp = obs_odometer_exp.view(-1, 3)  # (L*N*nRef, 3)
                 tgt_poses_exp = unsq_exp(tgt_poses, L, dim=0)  # (L, N, nRef, 3)
                 tgt_poses_exp = tgt_poses_exp.view(-1, 3)  # (L*N*nRef, 3)
                 obs_relpose = subtract_pose(
@@ -855,7 +855,9 @@ def evaluate_reconstruction(
                     device
                 )  # (1, N, nRef, 16)
 
-                obs_feats_exp = unsq_exp(obs_feats_curr, nRef, dim=2)  # (L, N, nRef, feat_dim)
+                obs_feats_exp = unsq_exp(
+                    obs_feats_curr, nRef, dim=2
+                )  # (L, N, nRef, feat_dim)
                 obs_feats_exp = obs_feats_exp.view(L, N * nRef, -1)
                 obs_relpose_enc = obs_relpose_enc.view(L, N * nRef, -1)
                 tgt_relpose_enc = tgt_relpose_enc.view(1, N * nRef, -1)
@@ -869,13 +871,17 @@ def evaluate_reconstruction(
                 with torch.no_grad():
                     pred_logits = decoder(rec_inputs)  # (1, N*nRef, nclasses)
                     pred_logits = pred_logits.squeeze(0)
-                    pred_outputs = unflatten_two(pred_logits, N, nRef)  # (N, nRef, nclasses)
+                    pred_outputs = unflatten_two(
+                        pred_logits, N, nRef
+                    )  # (N, nRef, nclasses)
                     loss = rec_loss_fn(
                         pred_logits,
                         flatten_two(tgt_feat),
                         cluster_centroids,
                         reduction="none",
-                    ).sum(dim=1)  # (N*nRef, )
+                    ).sum(
+                        dim=1
+                    )  # (N*nRef, )
 
                 if multi_step:
                     episode_losses[step + 1].append(loss.cpu())

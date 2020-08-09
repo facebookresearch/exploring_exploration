@@ -103,9 +103,7 @@ def batch_obs(observations: List[Dict]) -> Dict:
             batch[sensor].append(obs[sensor])
 
     for sensor in batch:
-        batch[sensor] = torch.tensor(
-            np.array(batch[sensor]), dtype=torch.float
-        )
+        batch[sensor] = torch.tensor(np.array(batch[sensor]), dtype=torch.float)
     return batch
 
 
@@ -124,9 +122,7 @@ def poll_checkpoint_folder(
         else return None.
     """
     assert os.path.isdir(checkpoint_folder), "invalid checkpoint folder path"
-    models_paths = list(
-        filter(os.path.isfile, glob.glob(checkpoint_folder + "/*"))
-    )
+    models_paths = list(filter(os.path.isfile, glob.glob(checkpoint_folder + "/*")))
     models_paths.sort(key=os.path.getmtime)
     ind = previous_ckpt_ind + 1
     if ind < len(models_paths):

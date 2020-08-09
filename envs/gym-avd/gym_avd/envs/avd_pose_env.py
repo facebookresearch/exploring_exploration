@@ -749,22 +749,21 @@ class AVDPoseLandmarksVisitObjectsEnv(AVDPoseLandmarksEnv):
 
         return route
 
+
 register(
-        id='avd-pose-v0',
-        entry_point='gym_avd.envs:AVDPoseLandmarksEnv',
+    id="avd-pose-v0", entry_point="gym_avd.envs:AVDPoseLandmarksEnv",
 )
 
 register(
-        id='avd-pose-random-oracle-v0',
-        entry_point='gym_avd.envs:AVDPoseLandmarksEnv',
+    id="avd-pose-random-oracle-v0", entry_point="gym_avd.envs:AVDPoseLandmarksEnv",
 )
 
 register(
-        id='avd-pose-landmarks-oracle-v0',
-        entry_point='gym_avd.envs:AVDPoseLandmarksVisitLandmarksEnv',
+    id="avd-pose-landmarks-oracle-v0",
+    entry_point="gym_avd.envs:AVDPoseLandmarksVisitLandmarksEnv",
 )
 
 register(
-        id='avd-pose-objects-oracle-v0',
-        entry_point='gym_avd.envs:AVDPoseLandmarksVisitObjectsEnv',
+    id="avd-pose-objects-oracle-v0",
+    entry_point="gym_avd.envs:AVDPoseLandmarksVisitObjectsEnv",
 )

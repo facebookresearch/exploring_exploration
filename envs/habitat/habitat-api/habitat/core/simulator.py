@@ -69,9 +69,7 @@ class SimulatorActionsSingleton(metaclass=Singleton):
             SimulatorActions.extend_action_space("MY_ACTION")
             print(SimulatorActions.MY_ACTION)
         """
-        assert (
-            name not in self._known_actions
-        ), "Cannot register an action name twice"
+        assert name not in self._known_actions, "Cannot register an action name twice"
         self._known_actions[name] = len(self._known_actions)
 
         return self._known_actions[name]
@@ -171,9 +169,7 @@ class Observations(dict):
         sensors: list of sensors whose observations are fetched and packaged.
     """
 
-    def __init__(
-        self, sensors: Dict[str, Sensor], *args: Any, **kwargs: Any
-    ) -> None:
+    def __init__(self, sensors: Dict[str, Sensor], *args: Any, **kwargs: Any) -> None:
         data = [
             (uuid, sensor.get_observation(*args, **kwargs))
             for uuid, sensor in sensors.items()
@@ -339,9 +335,7 @@ class AgentState:
     position: List[float]
     rotation: Optional[List[float]]
 
-    def __init__(
-        self, position: List[float], rotation: Optional[List[float]]
-    ) -> None:
+    def __init__(self, position: List[float], rotation: Optional[List[float]]) -> None:
         self.position = position
         self.rotation = rotation
 

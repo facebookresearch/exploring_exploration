@@ -32,9 +32,7 @@ NUM_EPISODES = 10
 def check_json_serializaiton(dataset: habitat.Dataset):
     start_time = time.time()
     json_str = str(dataset.to_json())
-    logger.info(
-        "JSON conversion finished. {} sec".format((time.time() - start_time))
-    )
+    logger.info("JSON conversion finished. {} sec".format((time.time() - start_time)))
     decoded_dataset = dataset.__class__()
     decoded_dataset.from_json(json_str)
     assert len(decoded_dataset.episodes) > 0
@@ -55,9 +53,7 @@ def test_single_pointnav_dataset():
     ), "Expected dataset doesn't expect separate episode file per scene."
     dataset = PointNavDatasetV1(config=dataset_config)
     assert len(dataset.episodes) > 0, "The dataset shouldn't be empty."
-    assert (
-        len(dataset.scene_ids) == 2
-    ), "The test dataset scenes number is wrong."
+    assert len(dataset.scene_ids) == 2, "The test dataset scenes number is wrong."
     check_json_serializaiton(dataset)
 
 
@@ -66,14 +62,10 @@ def test_multiple_files_scene_path():
     if not PointNavDatasetV1.check_config_paths_exist(dataset_config):
         pytest.skip("Test skipped as dataset files are missing.")
     scenes = PointNavDatasetV1.get_scenes_to_load(config=dataset_config)
-    assert (
-        len(scenes) > 0
-    ), "Expected dataset contains separate episode file per scene."
+    assert len(scenes) > 0, "Expected dataset contains separate episode file per scene."
     dataset_config.defrost()
     dataset_config.CONTENT_SCENES = scenes[:PARTIAL_LOAD_SCENES]
-    dataset_config.SCENES_DIR = os.path.join(
-        os.getcwd(), DEFAULT_SCENE_PATH_PREFIX
-    )
+    dataset_config.SCENES_DIR = os.path.join(os.getcwd(), DEFAULT_SCENE_PATH_PREFIX)
     dataset_config.freeze()
     partial_dataset = make_dataset(
         id_dataset=dataset_config.TYPE, config=dataset_config
@@ -94,9 +86,7 @@ def test_multiple_files_pointnav_dataset():
     if not PointNavDatasetV1.check_config_paths_exist(dataset_config):
         pytest.skip("Test skipped as dataset files are missing.")
     scenes = PointNavDatasetV1.get_scenes_to_load(config=dataset_config)
-    assert (
-        len(scenes) > 0
-    ), "Expected dataset contains separate episode file per scene."
+    assert len(scenes) > 0, "Expected dataset contains separate episode file per scene."
     dataset_config.defrost()
     dataset_config.CONTENT_SCENES = scenes[:PARTIAL_LOAD_SCENES]
     dataset_config.freeze()

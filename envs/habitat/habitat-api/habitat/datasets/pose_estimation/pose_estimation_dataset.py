@@ -44,17 +44,14 @@ class PoseEstimationDatasetV1(Dataset):
         episodes.
         """
         assert PoseEstimationDatasetV1.check_config_paths_exist(config)
-        dataset_dir = os.path.dirname(
-            config.DATA_PATH.format(split=config.SPLIT)
-        )
+        dataset_dir = os.path.dirname(config.DATA_PATH.format(split=config.SPLIT))
 
         cfg = config.clone()
         cfg.defrost()
         cfg.CONTENT_SCENES = []
         dataset = PoseEstimationDatasetV1(cfg)
         return PoseEstimationDatasetV1._get_scenes_from_folder(
-            content_scenes_path=dataset.content_scenes_path,
-            dataset_dir=dataset_dir,
+            content_scenes_path=dataset.content_scenes_path, dataset_dir=dataset_dir,
         )
 
     @staticmethod
@@ -90,8 +87,7 @@ class PoseEstimationDatasetV1(Dataset):
         scenes = config.CONTENT_SCENES
         if ALL_SCENES_MASK in scenes:
             scenes = PoseEstimationDatasetV1._get_scenes_from_folder(
-                content_scenes_path=self.content_scenes_path,
-                dataset_dir=dataset_dir,
+                content_scenes_path=self.content_scenes_path, dataset_dir=dataset_dir,
             )
 
         for scene in scenes:
@@ -115,9 +111,7 @@ class PoseEstimationDatasetV1(Dataset):
             self.shuffle_episodes(50)
         return cycle(self.episodes)
 
-    def from_json(
-        self, json_str: str, scenes_dir: Optional[str] = None
-    ) -> None:
+    def from_json(self, json_str: str, scenes_dir: Optional[str] = None) -> None:
         deserialized = json.loads(json_str)
         if CONTENT_SCENES_PATH_FIELD in deserialized:
             self.content_scenes_path = deserialized[CONTENT_SCENES_PATH_FIELD]

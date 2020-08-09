@@ -27,9 +27,7 @@ def make_env_fn(
     Returns:
         env object created according to specification.
     """
-    dataset = make_dataset(
-        task_config.DATASET.TYPE, config=task_config.DATASET
-    )
+    dataset = make_dataset(task_config.DATASET.TYPE, config=task_config.DATASET)
     env = env_class(
         config_env=task_config, config_baseline=rl_env_config, dataset=dataset
     )
@@ -71,8 +69,7 @@ def construct_envs(config: Config, env_class: Type, devices=None) -> VectorEnv:
             scenes = scenes * n_repeats
 
         assert len(scenes) >= trainer_config.num_processes, (
-            "reduce the number of processes as there "
-            "aren't enough number of scenes"
+            "reduce the number of processes as there " "aren't enough number of scenes"
         )
 
     scene_splits = [[] for _ in range(trainer_config.num_processes)]
@@ -88,9 +85,7 @@ def construct_envs(config: Config, env_class: Type, devices=None) -> VectorEnv:
         if len(scenes) > 0:
             env_config.DATASET.CONTENT_SCENES = scene_splits[i]
 
-        env_config.SIMULATOR.HABITAT_SIM_V0.GPU_DEVICE_ID = (
-            devices[ i % len(devices) ]
-        )
+        env_config.SIMULATOR.HABITAT_SIM_V0.GPU_DEVICE_ID = devices[i % len(devices)]
 
         agent_sensors = trainer_config.sensors.strip().split(",")
         env_config.SIMULATOR.AGENT_0.SENSORS = agent_sensors

@@ -13,9 +13,7 @@ from habitat.sims.habitat_simulator import _try_register_habitat_sim
 def make_sim(id_sim, **kwargs):
     logger.info("initializing sim {}".format(id_sim))
     _sim = registry.get_simulator(id_sim)
-    assert _sim is not None, "Could not find simulator with name {}".format(
-        id_sim
-    )
+    assert _sim is not None, "Could not find simulator with name {}".format(id_sim)
     return _sim(**kwargs)
 
 

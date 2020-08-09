@@ -13,8 +13,6 @@ from habitat.tasks.nav.nav_task import NavigationTask
 def make_task(id_task, **kwargs):
     logger.info("initializing task {}".format(id_task))
     _task = registry.get_task(id_task)
-    assert _task is not None, "Could not find task with name {}".format(
-        id_task
-    )
+    assert _task is not None, "Could not find task with name {}".format(id_task)
 
     return _task(**kwargs)

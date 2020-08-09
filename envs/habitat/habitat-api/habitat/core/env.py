@@ -56,12 +56,9 @@ class Env:
     _episode_start_time: Optional[float]
     _episode_over: bool
 
-    def __init__(
-        self, config: Config, dataset: Optional[Dataset] = None
-    ) -> None:
+    def __init__(self, config: Config, dataset: Optional[Dataset] = None) -> None:
         assert config.is_frozen(), (
-            "Freeze the config before creating the "
-            "environment, use config.freeze()."
+            "Freeze the config before creating the " "environment, use config.freeze()."
         )
         self._config = config
         self._dataset = dataset
@@ -99,9 +96,7 @@ class Env:
             }
         )
         self.action_space = self._sim.action_space
-        self._max_episode_seconds = (
-            self._config.ENVIRONMENT.MAX_EPISODE_SECONDS
-        )
+        self._max_episode_seconds = self._config.ENVIRONMENT.MAX_EPISODE_SECONDS
         self._max_episode_steps = self._config.ENVIRONMENT.MAX_EPISODE_STEPS
         self._elapsed_steps = 0
         self._episode_start_time: Optional[float] = None
@@ -130,9 +125,7 @@ class Env:
 
     @episodes.setter
     def episodes(self, episodes: List[Type[Episode]]) -> None:
-        assert (
-            len(episodes) > 0
-        ), "Environment doesn't accept empty episodes list."
+        assert len(episodes) > 0, "Environment doesn't accept empty episodes list."
         self._episodes = episodes
 
     @property
@@ -280,9 +273,7 @@ class RLEnv(gym.Env):
 
     _env: Env
 
-    def __init__(
-        self, config: Config, dataset: Optional[Dataset] = None
-    ) -> None:
+    def __init__(self, config: Config, dataset: Optional[Dataset] = None) -> None:
         self._env = Env(config, dataset)
         self.observation_space = self._env.observation_space
         self.action_space = self._env.action_space

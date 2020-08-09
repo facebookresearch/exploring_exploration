@@ -34,26 +34,17 @@ from habitat.tasks.utils import (
 from habitat.utils.visualizations import fog_of_war, maps
 from habitat.utils.visualizations.utils import topdown_to_image
 from habitat.tasks.exp_nav.shortest_path_follower import ShortestPathFollower
-from habitat.tasks.nav.nav_task import (
-    NavigationGoal,
-    NavigationEpisode,
-    NavigationTask
-)
+from habitat.tasks.nav.nav_task import NavigationGoal, NavigationEpisode, NavigationTask
 
 MAP_THICKNESS_SCALAR: int = 1250
 RGBSENSOR_DIMENSION: int = 3
 
 
-def merge_sim_episode_config(
-    sim_config: Config, episode: Type[Episode]
-) -> Any:
+def merge_sim_episode_config(sim_config: Config, episode: Type[Episode]) -> Any:
     sim_config.defrost()
     sim_config.SCENE = episode.scene_id
     sim_config.freeze()
-    if (
-        episode.start_position is not None
-        and episode.start_rotation is not None
-    ):
+    if episode.start_position is not None and episode.start_rotation is not None:
         agent_name = sim_config.AGENTS[sim_config.DEFAULT_AGENT_ID]
         agent_cfg = getattr(sim_config, agent_name)
         agent_cfg.defrost()
@@ -146,16 +137,14 @@ class ImageGoalSensorExploreNavigation(Sensor):
 
         if self._num_steps >= self.T_exp:
             tgt_obs = self._sim.get_observations_at(
-                         episode.goals[0].position,
-                         episode.goals[0].rotation
-                      )
-            tgt_im = tgt_obs['rgb']
+                episode.goals[0].position, episode.goals[0].rotation
+            )
+            tgt_im = tgt_obs["rgb"]
         else:
-            tgt_im = np.zeros((
-                                 self.config.HEIGHT,
-                                 self.config.WIDTH,
-                                 RGBSENSOR_DIMENSION
-                              ), dtype=np.uint8)
+            tgt_im = np.zeros(
+                (self.config.HEIGHT, self.config.WIDTH, RGBSENSOR_DIMENSION),
+                dtype=np.uint8,
+            )
 
         self._num_steps += 1
         return tgt_im
@@ -187,10 +176,7 @@ class GridGoalSensorExploreNavigation(Sensor):
 
     def _get_observation_space(self, *args: Any, **kwargs: Any):
         return spaces.Box(
-            low=-100000000.0,
-            high=100000000.0,
-            shape=(2, ),
-            dtype=np.float32,
+            low=-100000000.0, high=100000000.0, shape=(2,), dtype=np.float32,
         )
 
     def get_observation(self, observations, episode):
@@ -204,12 +190,10 @@ class GridGoalSensorExploreNavigation(Sensor):
             agent_rotation = self._sim.get_agent_state().rotation
             tgt_position = np.array(episode.goals[0].position)
             tgt_grid_pos = self._get_egocentric_grid_loc(
-                agent_position,
-                agent_rotation,
-                tgt_position
+                agent_position, agent_rotation, tgt_position
             )
         else:
-            tgt_grid_pos = np.zeros((2, ))
+            tgt_grid_pos = np.zeros((2,))
 
         self._num_steps += 1
         return tgt_grid_pos
@@ -238,27 +222,27 @@ class GridGoalSensorExploreNavigation(Sensor):
         curr_y = agent_position[0]
         curr_t = compute_heading_from_quaternion(agent_rotation)
         # Target in egocentric polar coordinates.
-        r_ct = math.sqrt((tgt_x - curr_x)**2 + (tgt_y - curr_y)**2)
+        r_ct = math.sqrt((tgt_x - curr_x) ** 2 + (tgt_y - curr_y) ** 2)
         p_ct = math.atan2(tgt_y - curr_y, tgt_x - curr_x) - curr_t
         # Convert to map grid coordinates with X rightward, Y downward.
         grid_size = self._sim.config.OCCUPANCY_MAPS.MAP_SCALE
         W = self._sim.config.HIGHRES_COARSE_OCC_SENSOR.WIDTH
         H = self._sim.config.HIGHRES_COARSE_OCC_SENSOR.HEIGHT
         large_map_range = self._sim.config.OCCUPANCY_MAPS.LARGE_MAP_RANGE
-        Wby2 = W//2
-        Hby2 = H//2
-        disp_y = - r_ct*math.cos(p_ct) / grid_size
-        disp_x = r_ct*math.sin(p_ct) / grid_size
+        Wby2 = W // 2
+        Hby2 = H // 2
+        disp_y = -r_ct * math.cos(p_ct) / grid_size
+        disp_x = r_ct * math.sin(p_ct) / grid_size
         # Map coordinates to occupancy image coordinates.
         # Accounts for conversion from global-map cropping to image size, and
         # shifts origin to top-left corner.
-        disp_y = Hby2 + H*disp_y/(2*large_map_range + 1)
-        disp_x = Wby2 + W*disp_x/(2*large_map_range + 1)
+        disp_y = Hby2 + H * disp_y / (2 * large_map_range + 1)
+        disp_x = Wby2 + W * disp_x / (2 * large_map_range + 1)
         # Clip the values to be within the occupancy image extents. This might
         # be a problem in large environments where the large_map_range does not
         # cover the target.
-        grid_y = np.clip(disp_y, 0, H-1)
-        grid_x = np.clip(disp_x, 0, W-1)
+        grid_y = np.clip(disp_y, 0, H - 1)
+        grid_x = np.clip(disp_x, 0, W - 1)
 
         return np.array([grid_x, grid_y])
 
@@ -294,12 +278,7 @@ class SPActionSensorExploreNavigation(Sensor):
         return SensorTypes.PATH
 
     def _get_observation_space(self, *args: Any, **kwargs: Any):
-        return spaces.Box(
-            low=0,
-            high=10,
-            shape=(1, ),
-            dtype=np.int32,
-        )
+        return spaces.Box(low=0, high=10, shape=(1,), dtype=np.int32,)
 
     def get_observation(self, observations, episode):
         episode_id = (episode.episode_id, episode.scene_id)
@@ -403,9 +382,7 @@ class TopDownMapExpNav(Measure):
                 self._map_resolution,
             )
 
-        point_padding = 2 * int(
-            np.ceil(self._map_resolution[0] / MAP_THICKNESS_SCALAR)
-        )
+        point_padding = 2 * int(np.ceil(self._map_resolution[0] / MAP_THICKNESS_SCALAR))
         self._top_down_map[
             s_x - point_padding : s_x + point_padding + 1,
             s_y - point_padding : s_y + point_padding + 1,
@@ -447,12 +424,8 @@ class TopDownMapExpNav(Measure):
 
     def _clip_map(self, _map):
         return _map[
-            self._ind_x_min
-            - self._grid_delta : self._ind_x_max
-            + self._grid_delta,
-            self._ind_y_min
-            - self._grid_delta : self._ind_y_max
-            + self._grid_delta,
+            self._ind_x_min - self._grid_delta : self._ind_x_max + self._grid_delta,
+            self._ind_y_min - self._grid_delta : self._ind_y_max + self._grid_delta,
         ]
 
     def update_metric(self, episode, action):
@@ -604,20 +577,18 @@ class SPLExpNav(Measure):
 
     def reset_metric(self, episode):
         self._step_count = 0
-        #self._previous_position = self._sim.get_agent_state().position.tolist()
+        # self._previous_position = self._sim.get_agent_state().position.tolist()
         self._start_end_episode_distance = episode.info["geodesic_distance"]
         self._agent_episode_distance = 0.0
         self._metric = None
 
     def _euclidean_distance(self, position_a, position_b):
-        return np.linalg.norm(
-            np.array(position_b) - np.array(position_a), ord=2
-        )
+        return np.linalg.norm(np.array(position_b) - np.array(position_a), ord=2)
 
     def update_metric(self, episode, action):
 
         # The metric is computed only after the exploration phase ends.
-        if self._step_count > self.T_exp+1:
+        if self._step_count > self.T_exp + 1:
             ep_success = 0
             current_position = self._sim.get_agent_state().position.tolist()
             distance_to_target = self._sim.geodesic_distance(
@@ -634,15 +605,14 @@ class SPLExpNav(Measure):
             self._previous_position = current_position
             self._metric = ep_success * (
                 self._start_end_episode_distance
-                / max(self._start_end_episode_distance,
-                      self._agent_episode_distance)
+                / max(self._start_end_episode_distance, self._agent_episode_distance)
             )
         else:
             self._metric = 0.0
 
         self._step_count += 1
 
-        if self._step_count == self.T_exp+1:
+        if self._step_count == self.T_exp + 1:
             self._previous_position = self._sim.get_agent_state().position.tolist()
 
 
@@ -669,7 +639,7 @@ class SuccessExpNav(Measure):
 
     def update_metric(self, episode, action):
         # The metric is computed only after the exploration phase ends.
-        if self._step_count > self.T_exp+1:
+        if self._step_count > self.T_exp + 1:
             ep_success = 0.0
             current_position = self._sim.get_agent_state().position.tolist()
             distance_to_target = self._sim.geodesic_distance(
@@ -714,7 +684,7 @@ class NavigationErrorExpNav(Measure):
 
     def update_metric(self, episode, action):
         # The metric is computed only after the exploration phase ends.
-        if self._step_count > self.T_exp+1:
+        if self._step_count > self.T_exp + 1:
             current_position = self._sim.get_agent_state().position.tolist()
             distance_to_target = self._sim.geodesic_distance(
                 current_position, episode.goals[0].position
@@ -729,15 +699,10 @@ class NavigationErrorExpNav(Measure):
 @registry.register_task(name="ExpNav-v0")
 class ExploreNavigationTask(NavigationTask):
     def __init__(
-        self,
-        task_config: Config,
-        sim: Simulator,
-        dataset: Optional[Dataset] = None,
+        self, task_config: Config, sim: Simulator, dataset: Optional[Dataset] = None,
     ) -> None:
 
         super().__init__(task_config=task_config, sim=sim, dataset=dataset)
 
-    def overwrite_sim_config(
-        self, sim_config: Any, episode: Type[Episode]
-    ) -> Any:
+    def overwrite_sim_config(self, sim_config: Any, episode: Type[Episode]) -> Any:
         return merge_sim_episode_config(sim_config, episode)

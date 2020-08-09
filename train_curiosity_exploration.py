@@ -376,7 +376,9 @@ def main():
 
         # ============ Update the ICM dynamics model using past data ===============
         icm_fd.train()
-        action_onehot = torch.zeros(NPROC, envs.action_space.n).to(device)  # (N, n_actions)
+        action_onehot = torch.zeros(NPROC, envs.action_space.n).to(
+            device
+        )  # (N, n_actions)
         avg_fd_loss = 0
         avg_fd_loss_count = 0
         icm_update_count = 0

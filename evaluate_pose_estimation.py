@@ -59,10 +59,18 @@ def main():
     args.feat_shape_pose = (512 * 9,)
     args.odometer_shape = (4,)  # (delta_y, delta_x, delta_head, delta_elev)
     args.match_thresh = 0.95
-    args.requires_policy = args.actor_type not in ["random", "oracle", "forward", "forward-plus", "frontier"]
+    args.requires_policy = args.actor_type not in [
+        "random",
+        "oracle",
+        "forward",
+        "forward-plus",
+        "frontier",
+    ]
     if "habitat" in args.env_name:
         if "CUDA_VISIBLE_DEVICES" in os.environ:
-            devices = [int(dev) for dev in os.environ["CUDA_VISIBLE_DEVICES"].split(",")]
+            devices = [
+                int(dev) for dev in os.environ["CUDA_VISIBLE_DEVICES"].split(",")
+            ]
             # Devices need to be indexed between 0 to N-1
             devices = [dev for dev in range(len(devices))]
         else:
@@ -193,8 +201,10 @@ def main():
     eval_config["ransac_batch"] = args.ransac_batch
     eval_config["use_action_embedding"] = args.use_action_embedding
     eval_config["use_collision_embedding"] = args.use_collision_embedding
-    eval_config["vis_save_dir"] = os.path.join(args.log_dir, 'visualizations')
-    eval_config["final_topdown_save_path"] = os.path.join(args.log_dir, 'top_down_maps.h5')
+    eval_config["vis_save_dir"] = os.path.join(args.log_dir, "visualizations")
+    eval_config["final_topdown_save_path"] = os.path.join(
+        args.log_dir, "top_down_maps.h5"
+    )
     eval_config["forward_action_id"] = 2 if "avd" in args.env_name else 0
     eval_config["turn_action_id"] = 0 if "avd" in args.env_name else 1
     eval_config["input_highres"] = args.input_highres
@@ -225,8 +235,7 @@ def main():
     )
 
     json.dump(
-        per_episode_metrics,
-        open(os.path.join(args.log_dir, 'statistics.json'), "w")
+        per_episode_metrics, open(os.path.join(args.log_dir, "statistics.json"), "w")
     )
 
 

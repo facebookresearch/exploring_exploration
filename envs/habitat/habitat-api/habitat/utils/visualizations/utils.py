@@ -56,14 +56,10 @@ def paste_overlapping_image(
 
     background_patch = background[
         (location[0] - foreground_size[0] // 2 + min_pad[0]) : (
-            location[0]
-            + (foreground_size[0] - foreground_size[0] // 2)
-            - max_pad[0]
+            location[0] + (foreground_size[0] - foreground_size[0] // 2) - max_pad[0]
         ),
         (location[1] - foreground_size[1] // 2 + min_pad[1]) : (
-            location[1]
-            + (foreground_size[1] - foreground_size[1] // 2)
-            - max_pad[1]
+            location[1] + (foreground_size[1] - foreground_size[1] // 2) - max_pad[1]
         ),
     ]
     foreground = foreground[
@@ -120,10 +116,7 @@ def images_to_video(
         os.makedirs(output_dir)
     video_name = video_name.replace(" ", "_").replace("\n", "_") + ".mp4"
     writer = imageio.get_writer(
-        os.path.join(output_dir, video_name),
-        fps=fps,
-        quality=quality,
-        **kwargs
+        os.path.join(output_dir, video_name), fps=fps, quality=quality, **kwargs
     )
     for im in tqdm.tqdm(images):
         writer.append_data(im)
@@ -202,7 +195,6 @@ def observations_to_image(observation: Dict, info: Dict) -> np.ndarray:
     return frame
 
 
-
 def topdown_to_image(topdown_info: np.ndarray) -> np.ndarray:
     r"""Generate image of the topdown map.
     """
@@ -217,29 +209,31 @@ def topdown_to_image(topdown_info: np.ndarray) -> np.ndarray:
         H = top_down_map.shape[0]
         W = top_down_map.shape[1]
         if H > W:
-            pad_value = (H - W)//2
+            pad_value = (H - W) // 2
             padding = ((0, 0), (pad_value, pad_value), (0, 0))
             map_agent_pos = (map_agent_pos[0], map_agent_pos[1] + pad_value)
         else:
-            pad_value = (W - H)//2
+            pad_value = (W - H) // 2
             padding = ((pad_value, pad_value), (0, 0), (0, 0))
             map_agent_pos = (map_agent_pos[0] + pad_value, map_agent_pos[1])
-        top_down_map = np.pad(top_down_map, padding, mode='constant', constant_values=255)
+        top_down_map = np.pad(
+            top_down_map, padding, mode="constant", constant_values=255
+        )
 
     if top_down_map.shape[0] < min_map_size:
         H, W = top_down_map.shape[:2]
         top_down_map = cv2.resize(top_down_map, (min_map_size, min_map_size))
         map_agent_pos = (
-                            int(map_agent_pos[0] * min_map_size // H),
-                            int(map_agent_pos[1] * min_map_size // W)
-                        )
+            int(map_agent_pos[0] * min_map_size // H),
+            int(map_agent_pos[1] * min_map_size // W),
+        )
     top_down_map = maps.draw_agent(
         image=top_down_map,
         agent_center_coord=map_agent_pos,
         agent_rotation=topdown_info["agent_angle"],
         agent_radius_px=top_down_map.shape[0] // 16,
     )
-    #if top_down_map.shape[0] < min_map_size:
+    # if top_down_map.shape[0] < min_map_size:
     #    pad_value = (min_map_size - top_down_map.shape[0]) // 2
     #    padding = ((pad_value, pad_value), (pad_value, pad_value), (0, 0))
     #    top_down_map = np.pad(top_down_map, padding, mode='constant', constant_values=255)

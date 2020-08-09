@@ -194,7 +194,7 @@ def subtract_pose(pose_common, poses):
     return poses_n
 
 
-def add_pose(pose_common, dposes, mode='yxt'):
+def add_pose(pose_common, dposes, mode="yxt"):
     """
     Convert dposes from frame-of-reference of pose_common to global pose.
 
@@ -206,16 +206,16 @@ def add_pose(pose_common, dposes, mode='yxt'):
         poses - (N, 3)
     """
 
-    assert(mode in ['xyt', 'yxt'])
+    assert mode in ["xyt", "yxt"]
 
-    if mode == 'yxt':
+    if mode == "yxt":
         dy, dx, dt = torch.unbind(dposes, dim=1)
         y_c, x_c, t_c = torch.unbind(pose_common, dim=1)
     else:
         dx, dy, dt = torch.unbind(dposes, dim=1)
         x_c, y_c, t_c = torch.unbind(pose_common, dim=1)
 
-    dr = torch.sqrt(dx**2 + dy**2)
+    dr = torch.sqrt(dx ** 2 + dy ** 2)
     dphi = torch.atan2(dy, dx) + t_c
     x = x_c + dr * torch.cos(dphi)
     y = y_c + dr * torch.sin(dphi)
@@ -223,7 +223,7 @@ def add_pose(pose_common, dposes, mode='yxt'):
     # Normalize angles to lie between -pi to pi
     t = torch.atan2(torch.sin(t), torch.cos(t))
 
-    if mode == 'yxt':
+    if mode == "yxt":
         poses = torch.stack([y, x, t], dim=1)
     else:
         poses = torch.stack([x, y, t], dim=1)

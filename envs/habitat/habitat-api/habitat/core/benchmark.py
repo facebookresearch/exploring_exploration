@@ -28,7 +28,7 @@ class Benchmark:
     """
 
     def __init__(self, config_paths: Optional[str] = None) -> None:
-        #config_env = get_config(config_paths)
+        # config_env = get_config(config_paths)
         config_env = get_config_pose(config_paths)
         self._env = Env(config=config_env)
 
@@ -50,9 +50,7 @@ class Benchmark:
         else:
             assert num_episodes <= len(self._env.episodes), (
                 "num_episodes({}) is larger than number of episodes "
-                "in environment ({})".format(
-                    num_episodes, len(self._env.episodes)
-                )
+                "in environment ({})".format(num_episodes, len(self._env.episodes))
             )
 
         assert num_episodes > 0, "num_episodes should be greater than 0"

@@ -39,12 +39,8 @@ class Episode:
 
     episode_id: str = attr.ib(default=None, validator=not_none_validator)
     scene_id: str = attr.ib(default=None, validator=not_none_validator)
-    start_position: List[float] = attr.ib(
-        default=None, validator=not_none_validator
-    )
-    start_rotation: List[float] = attr.ib(
-        default=None, validator=not_none_validator
-    )
+    start_position: List[float] = attr.ib(default=None, validator=not_none_validator)
+    start_rotation: List[float] = attr.ib(default=None, validator=not_none_validator)
     info: Optional[Dict[str, str]] = None
 
 
@@ -77,9 +73,7 @@ class Dataset(Generic[T]):
         Returns:
             list of episodes for the ``scene_id``.
         """
-        return list(
-            filter(lambda x: x.scene_id == scene_id, iter(self.episodes))
-        )
+        return list(filter(lambda x: x.scene_id == scene_id, iter(self.episodes)))
 
     def get_episodes(self, indexes: List[int]) -> List[T]:
         r"""
@@ -101,9 +95,13 @@ class Dataset(Generic[T]):
         # TODO: support shuffling between epoch and  scene switching
         if self.shuffle_dataset:
             self.shuffle_episodes(50)
-            print('=====> Dataset: Shuffling episodes!')
+            print("=====> Dataset: Shuffling episodes!")
         if len(self.episodes) < 15:
-            print('Set of episodes used: {}'.format([ep.episode_id for ep in self.episodes]))
+            print(
+                "Set of episodes used: {}".format(
+                    [ep.episode_id for ep in self.episodes]
+                )
+            )
         return cycle(self.episodes)
 
     def shuffle_episodes(self, shuffle_interval):
@@ -111,7 +109,7 @@ class Dataset(Generic[T]):
         np.random.shuffle(ranges)
         new_episodes = []
         for r in ranges:
-            new_episodes += self.episodes[r:r + shuffle_interval]
+            new_episodes += self.episodes[r : r + shuffle_interval]
         self.episodes = new_episodes
 
     def to_json(self) -> str:
@@ -122,9 +120,7 @@ class Dataset(Generic[T]):
         result = DatasetJSONEncoder().encode(self)
         return result
 
-    def from_json(
-        self, json_str: str, scenes_dir: Optional[str] = None
-    ) -> None:
+    def from_json(self, json_str: str, scenes_dir: Optional[str] = None) -> None:
         r"""
         Creates dataset from ``json_str``. Directory containing relevant 
         graphical assets of scenes is passed through ``scenes_dir``.
@@ -136,9 +132,7 @@ class Dataset(Generic[T]):
         """
         raise NotImplementedError
 
-    def filter_episodes(
-        self, filter_fn: Callable[[Episode], bool]
-    ) -> "Dataset":
+    def filter_episodes(self, filter_fn: Callable[[Episode], bool]) -> "Dataset":
         r"""
         Returns a new dataset with only the filtered episodes from the 
         original dataset.
@@ -210,9 +204,7 @@ class Dataset(Generic[T]):
         if allow_uneven_splits:
             stride = int(np.ceil(len(self.episodes) * 1.0 / num_splits))
             split_lengths = [stride] * (num_splits - 1)
-            split_lengths.append(
-                (len(self.episodes) - stride * (num_splits - 1))
-            )
+            split_lengths.append((len(self.episodes) - stride * (num_splits - 1)))
         else:
             if episodes_per_split is not None:
                 stride = episodes_per_split
@@ -222,9 +214,7 @@ class Dataset(Generic[T]):
 
         num_episodes = sum(split_lengths)
 
-        rand_items = np.random.choice(
-            len(self.episodes), num_episodes, replace=False
-        )
+        rand_items = np.random.choice(len(self.episodes), num_episodes, replace=False)
         if collate_scene_ids:
             scene_ids = {}
             for rand_ind in rand_items:
@@ -261,9 +251,5 @@ class Dataset(Generic[T]):
         if num_episodes == -1:
             return
         if num_episodes < -1:
-            raise ValueError(
-                f"Invalid number for episodes to sample: {num_episodes}"
-            )
-        self.episodes = np.random.choice(
-            self.episodes, num_episodes, replace=False
-        )
+            raise ValueError(f"Invalid number for episodes to sample: {num_episodes}")
+        self.episodes = np.random.choice(self.episodes, num_episodes, replace=False)

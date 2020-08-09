@@ -129,9 +129,7 @@ class PPOAgent(Agent):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--input-type",
-        default="blind",
-        choices=["blind", "rgb", "depth", "rgbd"],
+        "--input-type", default="blind", choices=["blind", "rgb", "depth", "rgbd"],
     )
     parser.add_argument("--model-path", default="", type=str)
     parser.add_argument(

@@ -56,9 +56,7 @@ def _load_test_data():
             pytest.skip("Please download Habitat test data to data folder.")
 
         datasets.append(
-            habitat.make_dataset(
-                id_dataset=config.DATASET.TYPE, config=config.DATASET
-            )
+            habitat.make_dataset(id_dataset=config.DATASET.TYPE, config=config.DATASET)
         )
 
         config.defrost()
@@ -80,9 +78,7 @@ def _vec_env_test_fn(configs, datasets, multiprocessing_start_method):
     )
     envs.reset()
     non_stop_actions = [
-        act
-        for act in range(envs.action_spaces[0].n)
-        if act != SimulatorActions.STOP
+        act for act in range(envs.action_spaces[0].n) if act != SimulatorActions.STOP
     ]
 
     for _ in range(2 * configs[0].ENVIRONMENT.MAX_EPISODE_STEPS):
@@ -134,9 +130,7 @@ def test_threaded_vectorized_env():
     envs = habitat.ThreadedVectorEnv(env_fn_args=env_fn_args)
     envs.reset()
     non_stop_actions = [
-        act
-        for act in range(envs.action_spaces[0].n)
-        if act != SimulatorActions.STOP
+        act for act in range(envs.action_spaces[0].n) if act != SimulatorActions.STOP
     ]
 
     for i in range(2 * configs[0].ENVIRONMENT.MAX_EPISODE_STEPS):
@@ -157,35 +151,27 @@ def test_env():
             scene_id=config.SIMULATOR.SCENE,
             start_position=[-3.0133917, 0.04623024, 7.3064547],
             start_rotation=[0, 0.163276, 0, 0.98658],
-            goals=[
-                NavigationGoal(position=[-3.0133917, 0.04623024, 7.3064547])
-            ],
+            goals=[NavigationGoal(position=[-3.0133917, 0.04623024, 7.3064547])],
             info={"geodesic_distance": 0.001},
         )
     ]
     env.reset()
 
     non_stop_actions = [
-        act
-        for act in range(env.action_space.n)
-        if act != SimulatorActions.STOP
+        act for act in range(env.action_space.n) if act != SimulatorActions.STOP
     ]
     for _ in range(config.ENVIRONMENT.MAX_EPISODE_STEPS):
         act = np.random.choice(non_stop_actions)
         env.step(act)
 
     # check for steps limit on environment
-    assert env.episode_over is True, (
-        "episode should be over after " "max_episode_steps"
-    )
+    assert env.episode_over is True, "episode should be over after " "max_episode_steps"
 
     env.reset()
 
     env.step(SimulatorActions.STOP)
     # check for STOP action
-    assert env.episode_over is True, (
-        "episode should be over after STOP " "action"
-    )
+    assert env.episode_over is True, "episode should be over after STOP " "action"
 
     env.close()
 
@@ -210,9 +196,7 @@ def test_rl_vectorized_envs():
     envs = habitat.VectorEnv(make_env_fn=make_rl_env, env_fn_args=env_fn_args)
     envs.reset()
     non_stop_actions = [
-        act
-        for act in range(envs.action_spaces[0].n)
-        if act != SimulatorActions.STOP
+        act for act in range(envs.action_spaces[0].n) if act != SimulatorActions.STOP
     ]
 
     for i in range(2 * configs[0].ENVIRONMENT.MAX_EPISODE_STEPS):
@@ -251,9 +235,7 @@ def test_rl_env():
             scene_id=config.SIMULATOR.SCENE,
             start_position=[-3.0133917, 0.04623024, 7.3064547],
             start_rotation=[0, 0.163276, 0, 0.98658],
-            goals=[
-                NavigationGoal(position=[-3.0133917, 0.04623024, 7.3064547])
-            ],
+            goals=[NavigationGoal(position=[-3.0133917, 0.04623024, 7.3064547])],
             info={"geodesic_distance": 0.001},
         )
     ]
@@ -262,14 +244,10 @@ def test_rl_env():
     observation = env.reset()
 
     non_stop_actions = [
-        act
-        for act in range(env.action_space.n)
-        if act != SimulatorActions.STOP
+        act for act in range(env.action_space.n) if act != SimulatorActions.STOP
     ]
     for _ in range(config.ENVIRONMENT.MAX_EPISODE_STEPS):
-        observation, reward, done, info = env.step(
-            np.random.choice(non_stop_actions)
-        )
+        observation, reward, done, info = env.step(np.random.choice(non_stop_actions))
 
     # check for steps limit on environment
     assert done is True, "episodes should be over after max_episode_steps"

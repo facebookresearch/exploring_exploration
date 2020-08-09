@@ -37,10 +37,10 @@ def main(args):
     config = habitat.get_config(config_paths=args.config_path)
     config.defrost()
     # Update path to SCENES_DIR, DATA_PATH
-    config.DATASET.SCENES_DIR = os.path.join(args.habitat_root, 'data/scene_datasets')
+    config.DATASET.SCENES_DIR = os.path.join(args.habitat_root, "data/scene_datasets")
     config.DATASET.DATA_PATH = os.path.join(
         args.habitat_root,
-        'data/datasets/pointnav/mp3d/v1_unique/{split}/{split}.json.gz'
+        "data/datasets/pointnav/mp3d/v1_unique/{split}/{split}.json.gz",
     )
     config.freeze()
     env = habitat.Env(config=config)
@@ -51,7 +51,7 @@ def main(args):
     for epcount in range(num_episodes):
         env.reset()
         scene_id = env.current_episode.scene_id
-        scene_name = scene_id.split('/')[-1]
+        scene_name = scene_id.split("/")[-1]
         print("Gathering data for scene # {}: {}".format(epcount, scene_name))
 
         min_x, min_z, max_x, max_z = env._sim.get_environment_extents()

@@ -7,7 +7,9 @@
 from habitat.core.registry import registry
 from habitat.datasets.eqa.mp3d_eqa_dataset import Matterport3dDatasetV1
 from habitat.datasets.pointnav.pointnav_dataset import PointNavDatasetV1
-from habitat.datasets.pose_estimation.pose_estimation_dataset import PoseEstimationDatasetV1
+from habitat.datasets.pose_estimation.pose_estimation_dataset import (
+    PoseEstimationDatasetV1,
+)
 from habitat.datasets.exp_nav.exp_nav_dataset import ExpNavDatasetV1
 
 

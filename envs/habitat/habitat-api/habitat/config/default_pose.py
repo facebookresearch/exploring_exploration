@@ -69,8 +69,8 @@ _C.TASK.COLLISION_SENSOR.TYPE = "CollisionSensor"
 # -----------------------------------------------------------------------------
 _C.TASK.OPSR = CN()
 _C.TASK.OPSR.TYPE = "OPSR"
-_C.TASK.OPSR.GEODESIC_DIST_THRESH = 2.0 # Meters
-_C.TASK.OPSR.ANGULAR_DIST_THRESH = 20.0 # Degrees
+_C.TASK.OPSR.GEODESIC_DIST_THRESH = 2.0  # Meters
+_C.TASK.OPSR.ANGULAR_DIST_THRESH = 20.0  # Degrees
 # -----------------------------------------------------------------------------
 # # AREA COVERED MEASUREMENT
 # -----------------------------------------------------------------------------
@@ -112,7 +112,7 @@ _C.TASK.OBJECTS_COVERED_GEOMETRIC.TYPE = "ObjectsCoveredGeometric"
 # -----------------------------------------------------------------------------
 _C.TASK.NOVELTY_REWARD = CN()
 _C.TASK.NOVELTY_REWARD.TYPE = "NoveltyReward"
-_C.TASK.NOVELTY_REWARD.GRID_SIZE = 0.5 # In meters
+_C.TASK.NOVELTY_REWARD.GRID_SIZE = 0.5  # In meters
 # -----------------------------------------------------------------------------
 # # COVERAGE_NOVELTY_REWARD MEASUREMENT
 # -----------------------------------------------------------------------------
@@ -125,9 +125,7 @@ _C.SIMULATOR = CN()
 _C.SIMULATOR.TYPE = "Sim-v1"
 _C.SIMULATOR.ACTION_SPACE_CONFIG = "v2"
 _C.SIMULATOR.FORWARD_STEP_SIZE = 0.25  # in metres
-_C.SIMULATOR.SCENE = (
-    "data/scene_datasets/habitat-test-scenes/" "van-gogh-room.glb"
-)
+_C.SIMULATOR.SCENE = "data/scene_datasets/habitat-test-scenes/" "van-gogh-room.glb"
 _C.SIMULATOR.SEED = _C.SEED
 _C.SIMULATOR.TURN_ANGLE = 10  # angle to rotate left or right in degrees
 _C.SIMULATOR.TILT_ANGLE = 15  # angle to tilt the camera up or down in degrees
@@ -174,8 +172,7 @@ _C.SIMULATOR.COARSE_OCC_SENSOR.TYPE = "HabitatSimCoarseOccSensor"
 # # HIGHRES COARSE-OCCUPANCY SENSOR
 # -----------------------------------------------------------------------------
 _C.SIMULATOR.HIGHRES_COARSE_OCC_SENSOR = SENSOR.clone()
-_C.SIMULATOR.HIGHRES_COARSE_OCC_SENSOR.TYPE = \
-        "HabitatSimHighResCoarseOccSensor"
+_C.SIMULATOR.HIGHRES_COARSE_OCC_SENSOR.TYPE = "HabitatSimHighResCoarseOccSensor"
 # -----------------------------------------------------------------------------
 # # OCCUPANCY MAPS
 # -----------------------------------------------------------------------------
@@ -193,13 +190,13 @@ _C.SIMULATOR.OCCUPANCY_MAPS.GET_PROJ_LOC_MAP = False
 _C.SIMULATOR.OCCUPANCY_MAPS.GET_HIGHRES_LOC_MAP = False
 _C.SIMULATOR.OCCUPANCY_MAPS.USE_GT_OCC_MAP = False
 _C.SIMULATOR.OCCUPANCY_MAPS.MEASURE_NOISE_FREE_AREA = False
-_C.SIMULATOR.OCCUPANCY_MAPS.COVERAGE_NOVELTY_POOLING = 'mean'
+_C.SIMULATOR.OCCUPANCY_MAPS.COVERAGE_NOVELTY_POOLING = "mean"
 # -----------------------------------------------------------------------------
 # # OBJECT ANNOTATIONS
 # -----------------------------------------------------------------------------
 _C.SIMULATOR.OBJECT_ANNOTATIONS = CN()
 _C.SIMULATOR.OBJECT_ANNOTATIONS.IS_AVAILABLE = False
-_C.SIMULATOR.OBJECT_ANNOTATIONS.PATH = './'
+_C.SIMULATOR.OBJECT_ANNOTATIONS.PATH = "./"
 # -----------------------------------------------------------------------------
 # # POSE RGB SENSOR
 # -----------------------------------------------------------------------------
@@ -249,17 +246,15 @@ _C.DATASET.SPLIT = "train"
 _C.DATASET.SCENES_DIR = "data/scene_datasets"
 _C.DATASET.NUM_EPISODE_SAMPLE = -1
 _C.DATASET.CONTENT_SCENES = ["*"]
-_C.DATASET.DATA_PATH = (
-    "data/datasets/pose_estimation/mp3d/v1/{split}/{split}.json.gz"
-)
+_C.DATASET.DATA_PATH = "data/datasets/pose_estimation/mp3d/v1/{split}/{split}.json.gz"
 _C.DATASET.SHUFFLE_DATASET = True
 
 
 # -----------------------------------------------------------------------------
 
+
 def get_config_pose(
-    config_paths: Optional[Union[List[str], str]] = None,
-    opts: Optional[list] = None,
+    config_paths: Optional[Union[List[str], str]] = None, opts: Optional[list] = None,
 ) -> CN:
     r"""Create a unified config with default values overwritten by values from
     `config_paths` and overwritten by options from `opts`.

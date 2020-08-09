@@ -1491,8 +1491,7 @@ def evaluate_visitation(
             delta_ego = torch.zeros((NPROC, 3)).to(device)
             frontier_agent.reset()
         if use_policy:
-            recurrent_hidden_states = \
-                torch.zeros(NPROC, feat_shape_sim[0]).to(device)
+            recurrent_hidden_states = torch.zeros(NPROC, feat_shape_sim[0]).to(device)
             masks = torch.zeros(NPROC, 1).to(device)
         stepwise_osr = [[] for pr in range(NPROC)]
         stepwise_collisions = [[] for pr in range(NPROC)]
@@ -1553,7 +1552,7 @@ def evaluate_visitation(
             elif actor_type == "frontier":
                 # This assumes that NPROC = 1
                 occ_map = asnumpy(obs["highres_coarse_occupancy"][0])
-                occ_map = rearrange(occ_map, 'c h w -> h w c').astype(np.uint8)
+                occ_map = rearrange(occ_map, "c h w -> h w c").astype(np.uint8)
                 action = frontier_agent.act(
                     occ_map, asnumpy(delta_ego[0]), prev_collision[0].item()
                 )
@@ -1565,9 +1564,7 @@ def evaluate_visitation(
                 if visualize_policy:
                     per_proc_rgb[pr].append(torch_to_np(obs["im"][pr]))
                     per_proc_depth[pr].append(torch_to_np_depth(obs["depth"][pr]))
-                    per_proc_fine_occ[pr].append(
-                        torch_to_np(obs["fine_occupancy"][pr])
-                    )
+                    per_proc_fine_occ[pr].append(torch_to_np(obs["fine_occupancy"][pr]))
                     per_proc_coarse_occ[pr].append(
                         torch_to_np(obs["coarse_occupancy"][pr])
                     )
@@ -1581,8 +1578,7 @@ def evaluate_visitation(
                 if step == num_steps - 1:
                     episode_final_topdown_map_all.append(
                         cv2.resize(
-                            np.flip(infos[pr]["topdown_map"], axis=2),
-                            (200, 200)
+                            np.flip(infos[pr]["topdown_map"], axis=2), (200, 200)
                         )
                     )
 
@@ -1600,9 +1596,7 @@ def evaluate_visitation(
                 stepwise_osr[pr].append(infos[pr]["oracle_pose_success"])
                 stepwise_collisions[pr].append(obs_collns[pr, 0].item())
                 if "num_objects_visited" in infos[pr]:
-                    stepwise_objects[pr].append(
-                        infos[pr]["num_objects_visited"]
-                    )
+                    stepwise_objects[pr].append(infos[pr]["num_objects_visited"])
                     stepwise_objects_small[pr].append(
                         infos[pr]["num_small_objects_visited"]
                     )
@@ -1618,9 +1612,7 @@ def evaluate_visitation(
                     stepwise_objects_medium[pr].append(0.0)
                     stepwise_objects_large[pr].append(0.0)
                 if "num_categories_visited" in infos[pr]:
-                    stepwise_categories[pr].append(
-                        infos[pr]["num_categories_visited"]
-                    )
+                    stepwise_categories[pr].append(infos[pr]["num_categories_visited"])
                 else:
                     stepwise_categories[pr].append(0.0)
                 stepwise_area[pr].append(infos[pr]["seen_area"])
@@ -1663,14 +1655,11 @@ def evaluate_visitation(
                     final_topdown_map_data,
                 )
                 video_frames = [
-                    proc_fn([
-                        cv2.resize(d, (WIDTH, HEIGHT))
-                        for d in per_frame_data
-                    ])
+                    proc_fn([cv2.resize(d, (WIDTH, HEIGHT)) for d in per_frame_data])
                     for per_frame_data in per_frame_data_proc
                 ]
                 tbwriter.add_video_from_np_images(
-                    "Episode_{:05d}".format(neval*num_to_save_per_batch + pr),
+                    "Episode_{:05d}".format(neval * num_to_save_per_batch + pr),
                     0,
                     video_frames,
                     fps=4,
@@ -1682,17 +1671,13 @@ def evaluate_visitation(
             for interval in interval_steps:
                 for pr in range(NPROC):
                     # Landmarks covered
-                    episode_osr_all[interval].append(
-                        stepwise_osr[pr][interval - 1]
-                    )
+                    episode_osr_all[interval].append(stepwise_osr[pr][interval - 1])
                     # Collisions per episode
                     episode_collns_all[interval].append(
                         stepwise_collisions[pr][:interval].sum()
                     )
                     # Area covered
-                    episode_area_all[interval].append(
-                        stepwise_area[pr][interval - 1]
-                    )
+                    episode_area_all[interval].append(stepwise_area[pr][interval - 1])
                     # Objects covered
                     episode_objects_all[interval].append(
                         stepwise_objects[pr][interval - 1]
@@ -1779,15 +1764,9 @@ def evaluate_visitation(
                     interval, num_eval_batches * NPROC
                 )
             )
-            metrics[interval]["landmarks_covered"] = np.mean(
-                episode_osr_all[interval]
-            )
-            metrics[interval]["collisions"] = np.mean(
-                episode_collns_all[interval]
-            )
-            metrics[interval]["area_covered"] = np.mean(
-                episode_area_all[interval]
-            )
+            metrics[interval]["landmarks_covered"] = np.mean(episode_osr_all[interval])
+            metrics[interval]["collisions"] = np.mean(episode_collns_all[interval])
+            metrics[interval]["area_covered"] = np.mean(episode_area_all[interval])
             metrics[interval]["objects_covered"] = np.mean(
                 episode_objects_all[interval]
             )

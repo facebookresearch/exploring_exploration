@@ -623,6 +623,7 @@ class AVDNavVisitLandmarksEnv(AVDNavEnv):
     a map-building exploration phase followed by navigation. The oracle agent visits
     landmarks in the environment during exploration.
     """
+
     metadata = {"render.modes": ["human", "rgb"]}
 
     def __init__(
@@ -898,7 +899,6 @@ class AVDNavVisitLandmarksEnv(AVDNavEnv):
 
 
 class AVDNavVisitObjectsEnv(AVDNavEnv):
-
     def __init__(
         self,
         max_steps: Optional[int] = None,
@@ -1042,16 +1042,14 @@ class AVDNavVisitObjectsEnv(AVDNavEnv):
 
 
 register(
-        id='avd-nav-random-oracle-v0',
-        entry_point='gym_avd.envs:AVDNavEnv',
+    id="avd-nav-random-oracle-v0", entry_point="gym_avd.envs:AVDNavEnv",
 )
 
 register(
-        id='avd-nav-landmarks-oracle-v0',
-        entry_point='gym_avd.envs:AVDNavVisitLandmarksEnv',
+    id="avd-nav-landmarks-oracle-v0",
+    entry_point="gym_avd.envs:AVDNavVisitLandmarksEnv",
 )
 
 register(
-        id='avd-nav-objects-oracle-v0',
-        entry_point='gym_avd.envs:AVDNavVisitObjectsEnv',
+    id="avd-nav-objects-oracle-v0", entry_point="gym_avd.envs:AVDNavVisitObjectsEnv",
 )

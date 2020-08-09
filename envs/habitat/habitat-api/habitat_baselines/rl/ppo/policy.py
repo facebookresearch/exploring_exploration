@@ -13,11 +13,7 @@ from habitat_baselines.common.utils import CategoricalNet, Flatten
 
 class Policy(nn.Module):
     def __init__(
-        self,
-        observation_space,
-        action_space,
-        goal_sensor_uuid,
-        hidden_size=512,
+        self, observation_space, action_space, goal_sensor_uuid, hidden_size=512,
     ):
         super().__init__()
         self.dim_actions = action_space.n
@@ -74,9 +70,7 @@ class Net(nn.Module):
     def __init__(self, observation_space, hidden_size, goal_sensor_uuid):
         super().__init__()
         self.goal_sensor_uuid = goal_sensor_uuid
-        self._n_input_goal = observation_space.spaces[
-            self.goal_sensor_uuid
-        ].shape[0]
+        self._n_input_goal = observation_space.spaces[self.goal_sensor_uuid].shape[0]
         self._hidden_size = hidden_size
 
         self.cnn = self._init_perception_model(observation_space)
@@ -84,9 +78,7 @@ class Net(nn.Module):
         if self.is_blind:
             self.rnn = nn.GRU(self._n_input_goal, self._hidden_size)
         else:
-            self.rnn = nn.GRU(
-                self.output_size + self._n_input_goal, self._hidden_size
-            )
+            self.rnn = nn.GRU(self.output_size + self._n_input_goal, self._hidden_size)
 
         self.critic_linear = nn.Linear(self._hidden_size, 1)
 
@@ -159,9 +151,7 @@ class Net(nn.Module):
                 nn.ReLU(),
             )
 
-    def _conv_output_dim(
-        self, dimension, padding, dilation, kernel_size, stride
-    ):
+    def _conv_output_dim(self, dimension, padding, dilation, kernel_size, stride):
         r"""Calculates the output height and width based on the input
         height and width to the convolution layer.
 
@@ -195,9 +185,7 @@ class Net(nn.Module):
     def layer_init(self):
         for layer in self.cnn:
             if isinstance(layer, (nn.Conv2d, nn.Linear)):
-                nn.init.orthogonal_(
-                    layer.weight, nn.init.calculate_gain("relu")
-                )
+                nn.init.orthogonal_(layer.weight, nn.init.calculate_gain("relu"))
                 nn.init.constant_(layer.bias, val=0)
 
         for name, param in self.rnn.named_parameters():
@@ -227,9 +215,7 @@ class Net(nn.Module):
 
             # steps in sequence which have zero for any agent. Assume t=0 has
             # a zero in it.
-            has_zeros = (
-                (masks[1:] == 0.0).any(dim=-1).nonzero().squeeze().cpu()
-            )
+            has_zeros = (masks[1:] == 0.0).any(dim=-1).nonzero().squeeze().cpu()
 
             # +1 to correct the masks[1:]
             if has_zeros.dim() == 0:

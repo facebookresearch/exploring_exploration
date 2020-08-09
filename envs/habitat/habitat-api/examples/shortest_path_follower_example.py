@@ -39,17 +39,15 @@ def draw_top_down_map(info, heading, output_size):
         info["top_down_map"]["map"], info["top_down_map"]["fog_of_war_mask"]
     )
     original_map_size = top_down_map.shape[:2]
-    map_scale = np.array(
-        (1, original_map_size[1] * 1.0 / original_map_size[0])
-    )
+    map_scale = np.array((1, original_map_size[1] * 1.0 / original_map_size[0]))
     new_map_size = np.round(output_size * map_scale).astype(np.int32)
     # OpenCV expects w, h but map size is in h, w
     top_down_map = cv2.resize(top_down_map, (new_map_size[1], new_map_size[0]))
 
     map_agent_pos = info["top_down_map"]["agent_map_coord"]
-    map_agent_pos = np.round(
-        map_agent_pos * new_map_size / original_map_size
-    ).astype(np.int32)
+    map_agent_pos = np.round(map_agent_pos * new_map_size / original_map_size).astype(
+        np.int32
+    )
     top_down_map = maps.draw_agent(
         top_down_map,
         map_agent_pos,
@@ -89,9 +87,7 @@ def shortest_path_example(mode):
             )
             observations, reward, done, info = env.step(best_action)
             im = observations["rgb"]
-            top_down_map = draw_top_down_map(
-                info, observations["heading"], im.shape[0]
-            )
+            top_down_map = draw_top_down_map(info, observations["heading"], im.shape[0])
             output_im = np.concatenate((im, top_down_map), axis=1)
             images.append(output_im)
         images_to_video(images, dirname, "trajectory")

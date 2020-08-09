@@ -339,34 +339,34 @@ def compute_pose_sptm_ransac(
     # ========== Compute pairwise similarity with all prior observations ============
     median_filter = MedianPool1d(median_filter_size, 1, median_filter_size // 2)
     median_filter.to(device)
-    obs_feats_sim = repeat(obs_feats_sim, 't n f -> (t n r) f', r=nRef)
-    ref_feats_sim = repeat(ref_feats_sim, 'n r f -> (t n r) f', t=T)
+    obs_feats_sim = repeat(obs_feats_sim, "t n f -> (t n r) f", r=nRef)
+    ref_feats_sim = repeat(ref_feats_sim, "n r f -> (t n r) f", t=T)
     with torch.no_grad():
         paired_scores = rnet.compare(torch.cat([obs_feats_sim, ref_feats_sim], dim=1))
     paired_scores = F.softmax(paired_scores, dim=1)[:, 1]  # (T*N*nRef, )
-    paired_scores = rearrange(paired_scores, '(t n r) -> t (n r)', t=T, n=N)
+    paired_scores = rearrange(paired_scores, "(t n r) -> t (n r)", t=T, n=N)
     if paired_scores.shape[0] > 1:
         # Apply median filtering
         paired_scores = rearrange(paired_scores, "t nr -> nr () t")
         paired_scores = median_filter(paired_scores)
         paired_scores = rearrange(paired_scores, "nr () t -> t nr")
-    paired_scores = rearrange(paired_scores, 't (n r) -> t n r', t=T, n=N)
+    paired_scores = rearrange(paired_scores, "t (n r) -> t n r", t=T, n=N)
 
     # ========== Compute pairwise poses with all prior observations ============
-    ref_feats_pose = repeat(ref_feats_pose, 'n r f -> (t n r) f', t=T)
-    obs_feats_pose = repeat(obs_feats_pose, 't n f -> (t n r) f', r=nRef)
+    ref_feats_pose = repeat(ref_feats_pose, "n r f -> (t n r) f", t=T)
+    obs_feats_pose = repeat(obs_feats_pose, "t n f -> (t n r) f", r=nRef)
     with torch.no_grad():
         pairwise_dposes = posenet.get_pose_xyt_feats(obs_feats_pose, ref_feats_pose)
         if "avd" in env_name:
             pairwise_dposes[:, :2] *= 1000.0  # (m -> mm)
 
     # ============= Add pairwise delta to observation pose ==============
-    obs_poses_rep = repeat(obs_poses, 't n p -> (t n r) p', r=nRef)
-    pairwise_poses_world = add_pose(obs_poses_rep, pairwise_dposes, mode='xyt')
-    pairwise_poses_world = pairwise_poses_world.view(T, N, nRef, 3) # (x, y, t)
+    obs_poses_rep = repeat(obs_poses, "t n p -> (t n r) p", r=nRef)
+    pairwise_poses_world = add_pose(obs_poses_rep, pairwise_dposes, mode="xyt")
+    pairwise_poses_world = pairwise_poses_world.view(T, N, nRef, 3)  # (x, y, t)
 
     # ========== Define similarity weighted sampling function ==========
-    paired_scores = rearrange(paired_scores, 't n r -> t (n r)')
+    paired_scores = rearrange(paired_scores, "t n r -> t (n r)")
     # When no samples fall above the match_thresh, set match_thresh to a lower value
     match_thresh_mask = (paired_scores > match_thresh).sum(dim=0) == 0  # (N*nRef, )
     batch_match_thresh = torch.ones(N * nRef).to(device) * match_thresh
@@ -377,22 +377,20 @@ def compute_pose_sptm_ransac(
         )  # (N*nRef, )
     batch_match_thresh = batch_match_thresh.unsqueeze(0)  # (1, N*nRef)
     # Compute mask indicating validity of samples along time
-    valid_masks = paired_scores > batch_match_thresh # (T, N*nRef)
+    valid_masks = paired_scores > batch_match_thresh  # (T, N*nRef)
 
     # Assign zero weights to observations below a matching threshold
     sample_weights = (
         paired_scores * (paired_scores > batch_match_thresh).float()
     )  # (T, N*nRef)
-    pairwise_poses_world = rearrange(pairwise_poses_world, 't n r p -> t (n r) p')
+    pairwise_poses_world = rearrange(pairwise_poses_world, "t n r p -> t (n r) p")
     (
         pred_pose_inliers,
         pred_position_inliers,
         voting_map_inliers,
-        inlier_mask
+        inlier_mask,
     ) = ransac_estimator.ransac_pose_estimation(
-        pairwise_poses_world,
-        sample_weights,
-        valid_masks
+        pairwise_poses_world, sample_weights, valid_masks
     )
     novote_masks = match_thresh_mask
     # pred_pose_inliers - (N*nRef, num_poses), pred_position_inliers - (N*nRef, 3)
@@ -400,8 +398,12 @@ def compute_pose_sptm_ransac(
     pairwise_poses_map = ransac_estimator.polar2map(
         xyt2polar(flatten_two(pairwise_poses_world))
     )  # (T*N*nRef, 3)
-    pred_pose_inliers = unflatten_two(pred_pose_inliers, N, nRef)  # (N, nRef, num_poses)
-    pred_position_inliers = unflatten_two(pred_position_inliers, N, nRef)  # (N, nRef, 3)
+    pred_pose_inliers = unflatten_two(
+        pred_pose_inliers, N, nRef
+    )  # (N, nRef, num_poses)
+    pred_position_inliers = unflatten_two(
+        pred_position_inliers, N, nRef
+    )  # (N, nRef, 3)
     pairwise_poses_map = pairwise_poses_map.view(T, N, nRef, 3)  # (T, N, nRef, 3)
     obs_poses = obs_poses  # (T, N, 3)
     novote_masks = novote_masks.view(N, nRef)  # (N, nRef)
@@ -432,7 +434,7 @@ class RansacPoseEstimator:
         self.config = config
         self.device = device
         self.gaussian_kernel = get_gaussian_kernel(
-            kernel_size=self.config['vote_kernel_size'], sigma=2.5, channels=1
+            kernel_size=self.config["vote_kernel_size"], sigma=2.5, channels=1
         ).to(self.device)
         self.pose_head = pose_head
 
@@ -442,10 +444,10 @@ class RansacPoseEstimator:
         """
         pose_map = process_poseref_raw(
             pose_polar,
-            self.config['map_shape'],
-            self.config['map_scale'],
-            self.config['angles'],
-            self.config['bin_size']/2,
+            self.config["map_shape"],
+            self.config["map_scale"],
+            self.config["angles"],
+            self.config["bin_size"] / 2,
         )
         return pose_map
 
@@ -456,7 +458,7 @@ class RansacPoseEstimator:
         Output:
             vote_map - (bs, 1, mh, mw)
         """
-        map_shape = self.config['map_shape']
+        map_shape = self.config["map_shape"]
         pose_oh = torch.zeros(pose_map.shape[0], *map_shape, device=self.device)
         pose_oh[
             range(pose_map.shape[0]), 0, pose_map[:, 1].long(), pose_map[:, 0].long()
@@ -531,7 +533,7 @@ class RansacPoseEstimator:
         returns distance in (x, y) coordinates
         """
         T = p2.shape[0]
-        p1_rsz = repeat(p1, 'b p -> t b p', t=T)
+        p1_rsz = repeat(p1, "b p -> t b p", t=T)
         return torch.norm(p1_rsz[:, :, :2] - p2[:, :, :2], dim=2)
 
     def distance_fn_2(self, p1, p2):
@@ -541,7 +543,7 @@ class RansacPoseEstimator:
         returns distance in theta
         """
         T = p2.shape[0]
-        p1_rsz = repeat(p1, 'b p -> t b p', t=T)
+        p1_rsz = repeat(p1, "b p -> t b p", t=T)
         diff = p1_rsz[:, :, 2] - p2[:, :, 2]
         diff = torch.abs(torch.atan2(torch.sin(diff), torch.cos(diff)))  # (T, bs)
         return diff
@@ -553,9 +555,9 @@ class RansacPoseEstimator:
         Outputs:
             Returns (K, bs) integer indices for each of the input sequences
         """
-        K = self.config['ransac_batch']
+        K = self.config["ransac_batch"]
         sample_weights_t = sample_weights.transpose(0, 1)
-        idxes = torch.multinomial(sample_weights_t, K, replacement=True) # (bs, K)
+        idxes = torch.multinomial(sample_weights_t, K, replacement=True)  # (bs, K)
         return idxes.transpose(0, 1)
 
     def ransac_pose_estimation(self, pairwise_poses_world, sample_weights, valid_masks):
@@ -573,21 +575,27 @@ class RansacPoseEstimator:
         best_poses = None
         best_positions = None
         best_inlier_counts = torch.zeros(bs).to(self.device).long()
-        rthresh1 = self.config['ransac_theta_1']
-        rthresh2 = self.config['ransac_theta_2']
-        for _ in range(self.config['ransac_niter']):
+        rthresh1 = self.config["ransac_theta_1"]
+        rthresh2 = self.config["ransac_theta_2"]
+        for _ in range(self.config["ransac_niter"]):
             # Sample a subset of samples from each sequence
-            sample_idxes = self.sample_points(sample_weights) # (K, bs)
-            sample_idxes = repeat(sample_idxes, 'k b -> k b p', p=3)
+            sample_idxes = self.sample_points(sample_weights)  # (K, bs)
+            sample_idxes = repeat(sample_idxes, "k b -> k b p", p=3)
             pairwise_poses_curr = torch.gather(pairwise_poses_world, 0, sample_idxes)
             # Estimate pose from subset
             pred_poses, pred_positions = self.estimate_pose(pairwise_poses_curr)
             # Estimate consensus
-            pair_dist_1 = self.distance_fn_1(pred_positions, pairwise_poses_world) # (T, bs)
-            pair_dist_2 = self.distance_fn_2(pred_positions, pairwise_poses_world) # (T, bs)
+            pair_dist_1 = self.distance_fn_1(
+                pred_positions, pairwise_poses_world
+            )  # (T, bs)
+            pair_dist_2 = self.distance_fn_2(
+                pred_positions, pairwise_poses_world
+            )  # (T, bs)
             n_inliers = (
                 (pair_dist_1 < rthresh1) & (pair_dist_2 < rthresh2) & valid_masks
-            ).sum(dim=0) # (bs, )
+            ).sum(
+                dim=0
+            )  # (bs, )
             # Keep track of best estimates so far
             update_mask = n_inliers > best_inlier_counts
             if best_poses is None:
@@ -602,13 +610,15 @@ class RansacPoseEstimator:
         # Recompute the pose using all inliers
         pair_dist_1 = self.distance_fn_1(best_positions, pairwise_poses_world)
         pair_dist_2 = self.distance_fn_2(best_positions, pairwise_poses_world)
-        inlier_mask = (pair_dist_1 < rthresh1) & (pair_dist_2 < rthresh2) & valid_masks # (T, bs)
+        inlier_mask = (
+            (pair_dist_1 < rthresh1) & (pair_dist_2 < rthresh2) & valid_masks
+        )  # (T, bs)
         (
             pred_pose_inliers,
             pred_position_inliers,
-            voting_map_inliers
-        )= self.estimate_pose_mask(
+            voting_map_inliers,
+        ) = self.estimate_pose_mask(
             pairwise_poses_world, inlier_mask.float(),
-        ) # (bs, 3)
+        )  # (bs, 3)
 
         return pred_pose_inliers, pred_position_inliers, voting_map_inliers, inlier_mask

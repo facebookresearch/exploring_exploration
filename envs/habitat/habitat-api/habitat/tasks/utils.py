@@ -79,10 +79,8 @@ def compute_heading_from_quaternion(rotation: np.quaternion) -> float:
     Returns:
         Heading angle with clockwise rotation from -Z to X being +ve.
     """
-    direction_vector = np.array([0, 0, -1]) # Forward vector
-    heading_vector = quaternion_rotate_vector(
-        rotation.inverse(), direction_vector
-    )
+    direction_vector = np.array([0, 0, -1])  # Forward vector
+    heading_vector = quaternion_rotate_vector(rotation.inverse(), direction_vector)
     # Flip sign to compute clockwise rotation
     phi = -cartesian_to_polar(-heading_vector[2], heading_vector[0])[1]
 
@@ -99,9 +97,9 @@ def compute_quaternion_from_heading(heading: float) -> np.quaternion:
         A quaternion that represents a counter-clockwise rotation about Y-axis.
     """
     # Real part of quaternion.
-    q0 = math.cos(-heading/2)
+    q0 = math.cos(-heading / 2)
     # Imaginary part of quaternion.
-    q = (0, math.sin(-heading/2), 0)
+    q = (0, math.sin(-heading / 2), 0)
     return np.quaternion(q0, *q)
 
 
@@ -109,7 +107,7 @@ def compute_egocentric_delta(
     position1: np.array,
     rotation1: np.quaternion,
     position2: np.array,
-    rotation2: np.quaternion
+    rotation2: np.quaternion,
 ) -> np.array:
     r"""Computes the relative change in pose from (position1, rotation1) to
     (position2, rotation2).
@@ -133,7 +131,7 @@ def compute_egocentric_delta(
     theta_2 = compute_heading_from_quaternion(rotation2)
     # Compute relative delta in polar coordinates.
     # In this 2D coordinate system, X' is forward and Y' is rightward.
-    D_rho = math.sqrt((x2 - x1)**2 + (z2 - z1)**2)
+    D_rho = math.sqrt((x2 - x1) ** 2 + (z2 - z1) ** 2)
     D_phi = math.atan2(x2 - x1, -z2 + z1) - theta_1
     D_theta = theta_2 - theta_1
     return np.array((D_rho, D_phi, D_theta))
@@ -151,22 +149,14 @@ def truncated_normal_noise(eta, width):
     """
     mu = 0
     sigma = eta
-    lower = mu-width
-    upper = mu+width
-    X = stats.truncnorm(
-        (lower-mu)/sigma,
-        (upper-mu)/sigma,
-        loc=mu,
-        scale=sigma
-    )
+    lower = mu - width
+    upper = mu + width
+    X = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
     return X.rvs()
 
 
 def compute_updated_pose(
-    position: np.array,
-    rotation: np.quaternion,
-    delta_rpt: np.array,
-    delta_y: float,
+    position: np.array, rotation: np.quaternion, delta_rpt: np.array, delta_y: float,
 ) -> Tuple[np.array, np.quaternion]:
     r"""Given initial position, rotation and an egocentric delta,
     compute the updated pose by linear transformations.
