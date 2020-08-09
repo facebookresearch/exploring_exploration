@@ -1,5 +1,5 @@
-GYM_AVD_ROOT = "/private/home/sramakri/Research/ExploringExploration/a2c_discriminative_look_around/env/gym-avd"
-ROOT_DIR = "/private/home/sramakri/Research/ExploringExploration/a2c_discriminative_look_around/env/gym-avd/gym_avd/data/ActiveVisionDataset"
+GYM_AVD_ROOT = "<PATH TO GYM-AVD>"
+ROOT_DIR = "<PATH TO AVD DATASET ROOT>"
 CLUSTER_ROOT_DIR = f"{GYM_AVD_ROOT}/gym_avd/data/avd_clusters"
 AREAS_FILE = f"{GYM_AVD_ROOT}/gym_avd/data/environment_areas.json"
 OBJ_COUNTS_FILE = f"{GYM_AVD_ROOT}/gym_avd/data/object_counts_per_env.json"

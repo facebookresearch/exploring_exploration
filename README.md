@@ -58,7 +58,7 @@ cd $EXPLORING_EXPLORATION
 export model_path=<PATH TO MODEL>
 
 python -W ignore evaluate_visitation.py \
-	 --seed 123 \
+     --seed 123 \
      --num-steps 200 \
      --env-name avd-pose-v0 \
      --eval-split test \
@@ -82,10 +82,10 @@ cd $EXPLORING_EXPLORATION
 export model_path=<PATH TO MODEL>
 
 python -W ignore evaluate_visitation.py \
- 	 --seed 123 \
-	 --num-steps 1000 \
-   	 --env-name habitat \
-   	 --eval-split test \
+     --seed 123 \
+     --num-steps 1000 \
+     --env-name habitat \
+     --eval-split test \
      --num-processes 1 \
      --num-pose-refs 20 \
      --load-path $model_path \
@@ -115,17 +115,17 @@ export retrieval_net_path=<PATH TO RETRIEVAL NET>
 export pairwise_pose_net_path=<PATH TO PAIRWISE POSE PREDICTOR>
 
 python -W ignore evaluate_pose_estimation.py \
-	 --num-steps 200 \
-	 --map-size 31 \
-	 --env-name avd-pose-v0 \
-	 --map-scale 500.0 \
-	 --vote-kernel-size 3 \
-	 --num-processes 16 \
-	 --num-pose-refs 10 \
-	 --load-path $model_path \
-	 --eval-split test \
-	 --seed 123 \
-	 --pretrained-rnet $retrieval_net_path \
+     --num-steps 200 \
+     --map-size 31 \
+     --env-name avd-pose-v0 \
+     --map-scale 500.0 \
+     --vote-kernel-size 3 \
+     --num-processes 16 \
+     --num-pose-refs 10 \
+     --load-path $model_path \
+     --eval-split test \
+     --seed 123 \
+     --pretrained-rnet $retrieval_net_path \
      --pretrained-posenet $pairwise_pose_net_path \
      --eval-episodes 100 \
      --interval_steps 200 \
@@ -148,16 +148,16 @@ export retrieval_net_path=<PATH TO RETRIEVAL NET>
 export pairwise_pose_net_path=<PATH TO PAIRWISE POSE PREDICTOR>
 
 python -W ignore evaluate_pose_estimation.py \
-	  --num-steps 1000 \
-	  --map-size 101 \
-	  --env-name habitat \
-	  --map-scale 0.5 \
-	  --vote-kernel-size 5 \
-	  --num-processes 1 \
-	  --num-pose-refs 20 \
-	  --load-path $model_path \
-	  --eval-split test \
-	  --seed 123 \
+     --num-steps 1000 \
+     --map-size 101 \
+     --env-name habitat \
+     --map-scale 0.5 \
+     --vote-kernel-size 5 \
+     --num-processes 1 \
+     --num-pose-refs 20 \
+     --load-path $model_path \
+     --eval-split test \
+     --seed 123 \
      --pretrained-rnet $retrieval_net_path \
      --pretrained-posenet $pairwise_pose_net_path \
      --eval-episodes 10 \
@@ -190,21 +190,21 @@ export reconstruction_head_path=<PATH TO RECONSTRUCTION HEAD MODEL>
 export clusters_path=reconstruction_data_generation/avd/imagenet_clusters/clusters_00030_data.h5
 
 python -W ignore evaluate_reconstruction.py \
-	  --num-steps 200 \
-	  --env-name avd-recon-v0 \
-	  --load-path $model_path \
-	  --num-processes 16 \
-	  --seed 123 \
-	  --num-pose-refs 50 \
-	  --eval-split test \
-	  --clusters-path $clusters_path \
-	  --n-transformer-layers 2 \
-	  --load-path-rec $reconstruction_head_path \
-	  --eval-episodes 100 \
-	  --interval_steps 200 \
-	  --actor-type learned_policy \
-	  --visualize-policy False \
-	  --log-dir reconstruction_results
+     --num-steps 200 \
+     --env-name avd-recon-v0 \
+     --load-path $model_path \
+     --num-processes 16 \
+     --seed 123 \
+     --num-pose-refs 50 \
+     --eval-split test \
+     --clusters-path $clusters_path \
+     --n-transformer-layers 2 \
+     --load-path-rec $reconstruction_head_path \
+     --eval-episodes 100 \
+     --interval_steps 200 \
+     --actor-type learned_policy \
+     --visualize-policy False \
+     --log-dir reconstruction_results
 ```
 
 ### Evaluation on MP3D
@@ -219,23 +219,23 @@ export reconstruction_head_path=<PATH TO RECONSTRUCTION HEAD MODEL>
 export clusters_path=reconstruction_data_generation/mp3d/imagenet_clusters/clusters_00050_data.h5
 
 python -W ignore evaluate_reconstruction.py \
-	  --num-steps 1000 \
-	  --env-name habitat \
-	  --load-path $model_path \
-	  --num-processes 1 \
-	  --seed 123 \
-	  --num-pose-refs 100 \
-	  --eval-split test \
-	  --clusters-path $clusters_path \
-	  --n-transformer-layers 2 \
-	  --load-path-rec $reconstruction_head_path \
-	  --eval-episodes 10 \
-	  --interval_steps 1000 \
-	  --actor-type learned_policy \
-	  --visualize-policy False \
-	  --habitat-config-file configs/reconstruction_exploration/ppo_pose_test.yaml \
-	  --use-multi-gpu True \
-	  --log-dir reconstruction_results
+     --num-steps 1000 \
+     --env-name habitat \
+     --load-path $model_path \
+     --num-processes 1 \
+     --seed 123 \
+     --num-pose-refs 100 \
+     --eval-split test \
+     --clusters-path $clusters_path \
+     --n-transformer-layers 2 \
+     --load-path-rec $reconstruction_head_path \
+     --eval-episodes 10 \
+     --interval_steps 1000 \
+     --actor-type learned_policy \
+     --visualize-policy False \
+     --habitat-config-file configs/reconstruction_exploration/ppo_pose_test.yaml \
+     --use-multi-gpu True \
+     --log-dir reconstruction_results
 ```
 
 ### Note
@@ -249,24 +249,24 @@ A simple exploration policy can be trained by imitating an oracle agent that seq
 ```
 cd $EXPLORING_EXPLORATION
 mkdir -p trained_models/imitation_learning/avd
-	
+
 python -W ignore -u pretrain_imitation.py  \
-	  --lr 1e-4 \
-	  --seed 123 \
-	  --num-processes 16 \
-	  --num-steps 200 \
-	  --num-rl-steps 50 \
-	  --env-name avd-pose-landmarks-oracle-v0 \
-	  --save-interval 100 \
-	  --eval-interval 100 \
-	  --num-episodes 16000 \
-	  --save-dir trained_models/imitation_learning/avd/ \
-	  --log-dir trained_models/imitation_learning/avd/ \
-	  --agent-start-action-prob 0.0 \
-	  --agent-end-action-prob 0.3 \
-	  --agent-action-prob-schedule 100 \
-	  --agent-action-prob-factor 0.1 \
-	  --use-inflection-weighting True
+     --lr 1e-4 \
+     --seed 123 \
+     --num-processes 16 \
+     --num-steps 200 \
+     --num-rl-steps 50 \
+     --env-name avd-pose-landmarks-oracle-v0 \
+     --save-interval 100 \
+     --eval-interval 100 \
+     --num-episodes 16000 \
+     --save-dir trained_models/imitation_learning/avd/ \
+     --log-dir trained_models/imitation_learning/avd/ \
+     --agent-start-action-prob 0.0 \
+     --agent-end-action-prob 0.3 \
+     --agent-action-prob-schedule 100 \
+     --agent-action-prob-factor 0.1 \
+     --use-inflection-weighting True
 ```
 Different environments correspond to different oracles:
 - `oracle-random`: set `env-name` to `avd-pose-random-oracle-v0`
@@ -281,26 +281,26 @@ For training the coverage and novelty agents, we use the `train_exploration.py` 
 ```
 cd $EXPLORING_EXPLORATION
 mkdir -p trained_models/area_coverage/avd
-	
+
 python -W ignore -u train_exploration.py \
-	  --lr 3e-5 \
-	  --seed 123 \
-	  --num-processes 32 \
-	  --num-steps 200 \
-	  --num-rl-steps 50 \
-	  --env-name avd-pose-landmarks-oracle-v0 \
-	  --save-interval 100 \
-	  --eval-interval 100 \
-	  --num-episodes 64000 \
-	  --save-dir trained_models/area_coverage/avd \
-	  --log-dir trained_models/area_coverage/avd \
-	  --pretrained-il-model '' \
-	  --use-gae \
-	  --ppo-epoch 4 \
-	  --num-mini-batch 4 \
-	  --area-reward-scale 0.3 \
-	  --smooth-coverage-reward-scale 0.0 \
-	  --novelty-reward-scale 0.0
+     --lr 3e-5 \
+     --seed 123 \
+     --num-processes 32 \
+     --num-steps 200 \
+     --num-rl-steps 50 \
+     --env-name avd-pose-landmarks-oracle-v0 \
+     --save-interval 100 \
+     --eval-interval 100 \
+     --num-episodes 64000 \
+     --save-dir trained_models/area_coverage/avd \
+     --log-dir trained_models/area_coverage/avd \
+     --pretrained-il-model '' \
+     --use-gae \
+     --ppo-epoch 4 \
+     --num-mini-batch 4 \
+     --area-reward-scale 0.3 \
+     --smooth-coverage-reward-scale 0.0 \
+     --novelty-reward-scale 0.0
 ```
 Smooth coverage and novelty agents can be trained by setting the corresponding reward coefficients to a non-zero value and zeroing out the rest.
 
@@ -311,26 +311,26 @@ For training the curiosity agent, we use the `train_curiosity_exploration.py` sc
 ```
 cd $EXPLORING_EXPLORATION
 mkdir -p trained_models/curiosity/avd
-	
+
 python -W ignore -u train_curiosity_exploration.py \
-	  --lr 1e-4 \
-	  --seed 123 \
-	  --num-processes 32 \
-	  --num-steps 200 \
-	  --num-rl-steps 50 \
-	  --save-interval 100 \
-	  --eval-interval 100 \
-	  --num-episodes 64000 \
-	  --env-name avd-pose-landmarks-oracle-v0 \
-	  --save-dir trained_models/curiosity/avd \
-	  --log-dir trained_models/curiosity/avd \
-	  --pretrained-il-model '' \
-	  --use-gae \
-	  --ppo-epoch 4 \
-	  --num-mini-batch 4 \
-	  --reward-scale 1e-3 \
-	  --icm-embedding-type policy-lstm \
-	  --normalize-icm-rewards True
+     --lr 1e-4 \
+     --seed 123 \
+     --num-processes 32 \
+     --num-steps 200 \
+     --num-rl-steps 50 \
+     --save-interval 100 \
+     --eval-interval 100 \
+     --num-episodes 64000 \
+     --env-name avd-pose-landmarks-oracle-v0 \
+     --save-dir trained_models/curiosity/avd \
+     --log-dir trained_models/curiosity/avd \
+     --pretrained-il-model '' \
+     --use-gae \
+     --ppo-epoch 4 \
+     --num-mini-batch 4 \
+     --reward-scale 1e-3 \
+     --icm-embedding-type policy-lstm \
+     --normalize-icm-rewards True
 ```
 
 ### Reconstruction-based exploration training
@@ -342,21 +342,21 @@ cd $EXPLORING_EXPLORATION
 mkdir -p trained_models/reconstruction/avd/pretraining
 
 python -W ignore pretrain_reconstruction.py \
-      --lr 1e-4 \
-      --seed 123 \
-      --num-processes 16 \
-      --num-steps 200 \
-      --num-rl-steps 200 \
-      --env-name avd-recon-v0 \
-      --save-interval 100 \
-      --eval-interval 100 \
-      --num-episodes 64000 \
-      --save-dir trained_models/reconstruction/avd/pretraining \
-      --log-dir trained_models/reconstruction/avd/pretraining \
-      --num-pose-refs 50 \
-      --clusters-path reconstruction_data_generation/avd/imagenet_clusters/clusters_00030_data.h5 \
-      --rec-loss-fn-J 3 \
-      --n-transformer-layers 2
+     --lr 1e-4 \
+     --seed 123 \
+     --num-processes 16 \
+     --num-steps 200 \
+     --num-rl-steps 200 \
+     --env-name avd-recon-v0 \
+     --save-interval 100 \
+     --eval-interval 100 \
+     --num-episodes 64000 \
+     --save-dir trained_models/reconstruction/avd/pretraining \
+     --log-dir trained_models/reconstruction/avd/pretraining \
+     --num-pose-refs 50 \
+     --clusters-path reconstruction_data_generation/avd/imagenet_clusters/clusters_00030_data.h5 \
+     --rec-loss-fn-J 3 \
+     --n-transformer-layers 2
 ```
 
 For convenience, we provide a pre-trained reconstruction task-head in `$EXPLORING_EXPLORATION/pretrained_models/avd/pretrained_reconstruction/ckpt.pth`. The second phase is the training of the exploration policy. The exploration agent is rewarded for maximizing the reconstruction performance. Note, we keep the pre-trained reconstruction task-head frozen for this stage.
@@ -366,27 +366,27 @@ cd $EXPLORING_EXPLORATION
 mkdir -p trained_models/reconstruction/avd/exploration_policy
 
 python -W ignore train_reconstruction_exploration.py \
-      --lr 3e-5 \
-      --seed 123 \
-      --num-processes 32 \
-      --num-steps 200 \
-      --num-rl-steps 50 \
-      --env-name avd-recon-v0 \
-      --save-interval 100 \
-      --eval-interval 5 \
-      --num-episodes 64000 \
-      --save-dir trained_models/reconstruction/avd/exploration_policy \
-      --log-dir trained_models/reconstruction/avd/exploration_policy \
-      --load-path-rec pretrained_models/avd/pretrained_reconstruction/ckpt.pth \
-      --pretrained-il-model '' \
-      --num-pose-refs 50 \
-      --use-gae \
-      --ppo-epoch 4 \
-      --num-mini-batch 4 \
-      --rec-reward-scale 1e-1 \
-      --clusters-path reconstruction_data_generation/avd/imagenet_clusters/clusters_00030_data.h5 \
-      --n-transformer-layers 2 \
-      --rec-reward-interval 1
+     --lr 3e-5 \
+     --seed 123 \
+     --num-processes 32 \
+     --num-steps 200 \
+     --num-rl-steps 50 \
+     --env-name avd-recon-v0 \
+     --save-interval 100 \
+     --eval-interval 5 \
+     --num-episodes 64000 \
+     --save-dir trained_models/reconstruction/avd/exploration_policy \
+     --log-dir trained_models/reconstruction/avd/exploration_policy \
+     --load-path-rec pretrained_models/avd/pretrained_reconstruction/ckpt.pth \
+     --pretrained-il-model '' \
+     --num-pose-refs 50 \
+     --use-gae \
+     --ppo-epoch 4 \
+     --num-mini-batch 4 \
+     --rec-reward-scale 1e-1 \
+     --clusters-path reconstruction_data_generation/avd/imagenet_clusters/clusters_00030_data.h5 \
+     --n-transformer-layers 2 \
+     --rec-reward-interval 1
 ```
 
 ## Training on Habitat simulator
@@ -400,28 +400,28 @@ export MAGNUM_LOG=quiet
 
 cd $EXPLORING_EXPLORATION
 mkdir -p trained_models/imitation_learning/mp3d
-	
+
 python -W ignore -u pretrain_imitation.py  \
-	  --lr 1e-4 \
-	  --seed 123 \
-	  --num-processes 8 \
-	  --num-steps 500 \
-	  --num-rl-steps 100 \
-	  --env-name habitat \
-	  --save-interval 200 \
-	  --eval-interval 200 \
-	  --save-unique True \
-	  --num-episodes 16000 \
-	  --save-dir trained_models/imitation_learning/mp3d/ \
-	  --log-dir trained_models/imitation_learning/mp3d/ \
-	  --habitat-config-file configs/pretrain_imitation/ppo_pose_train_random_oracle.yaml \
-	  --eval-habitat-config-file configs/exploration/ppo_pose_val.yaml \
-	  --agent-start-action-prob 0.0 \
-	  --agent-end-action-prob 0.5 \
-	  --agent-action-prob-schedule 1000 \
-	  --agent-action-prob-factor 0.1 \
-	  --agent-action-duration 1 \
-	  --use-inflection-weighting True
+     --lr 1e-4 \
+     --seed 123 \
+     --num-processes 8 \
+     --num-steps 500 \
+     --num-rl-steps 100 \
+     --env-name habitat \
+     --save-interval 200 \
+     --eval-interval 200 \
+     --save-unique True \
+     --num-episodes 16000 \
+     --save-dir trained_models/imitation_learning/mp3d/ \
+     --log-dir trained_models/imitation_learning/mp3d/ \
+     --habitat-config-file configs/pretrain_imitation/ppo_pose_train_random_oracle.yaml \
+     --eval-habitat-config-file configs/exploration/ppo_pose_val.yaml \
+     --agent-start-action-prob 0.0 \
+     --agent-end-action-prob 0.5 \
+     --agent-action-prob-schedule 1000 \
+     --agent-action-prob-factor 0.1 \
+     --agent-action-duration 1 \
+     --use-inflection-weighting True
 ```
 
 Different oracles can be selected by varying the `ORACLE_TYPE` variable in the configuration file. The following config files correspond to different oracles:  
@@ -438,29 +438,29 @@ export MAGNUM_LOG=quiet
 
 cd $EXPLORING_EXPLORATION
 mkdir -p trained_models/area_coverage/mp3d
-	
+
 python -W ignore -u train_exploration.py \
-	  --lr 1e-1 \
-	  --seed 123 \
-	  --num-processes 8 \
-	  --num-steps 500 \
-	  --num-rl-steps 100 \
-	  --env-name habitat \
-	  --save-interval 200 \
-	  --eval-interval 200 \
-	  --num-episodes 16000 \
-	  --save-unique True \
-	  --save-dir trained_models/area_coverage/mp3d \
-	  --log-dir trained_models/area_coverage/mp3d \
-	  --habitat-config-file configs/exploration/ppo_pose_train.yaml \
-	  --eval-habitat-config-file configs/exploration/ppo_pose_val.yaml \
-	  --pretrained-il-model '' \
-	  --use-gae \
-	  --ppo-epoch 4 \
-	  --num-mini-batch 2 \
-	  --area-reward-scale 1e-3 \
-	  --smooth-coverage-reward-scale 0.0 \
-	  --novelty-reward-scale 0.0
+     --lr 1e-1 \
+     --seed 123 \
+     --num-processes 8 \
+     --num-steps 500 \
+     --num-rl-steps 100 \
+     --env-name habitat \
+     --save-interval 200 \
+     --eval-interval 200 \
+     --num-episodes 16000 \
+     --save-unique True \
+     --save-dir trained_models/area_coverage/mp3d \
+     --log-dir trained_models/area_coverage/mp3d \
+     --habitat-config-file configs/exploration/ppo_pose_train.yaml \
+     --eval-habitat-config-file configs/exploration/ppo_pose_val.yaml \
+     --pretrained-il-model '' \
+     --use-gae \
+     --ppo-epoch 4 \
+     --num-mini-batch 2 \
+     --area-reward-scale 1e-3 \
+     --smooth-coverage-reward-scale 0.0 \
+     --novelty-reward-scale 0.0
 ```
 Smooth coverage and novelty agents can be trained by setting the corresponding reward coefficients to a non-zero value and zeroing out the rest. 
 
@@ -473,29 +473,29 @@ export MAGNUM_LOG=quiet
 
 cd $EXPLORING_EXPLORATION
 mkdir -p trained_models/curiosity/mp3d
-	
+
 python -W ignore train_curiosity_exploration.py \
-	  --lr 1e-4 \
-	  --seed 123 \
-	  --num-processes 8 \
-	  --num-steps 500 \
-	  --num-rl-steps 100 \
-	  --env-name habitat \
-	  --save-interval 200 \
-	  --eval-interval 200 \
-	  --num-episodes 16000 \
-	  --save-unique True \
-	  --save-dir trained_models/curiosity/mp3d \
-	  --log-dir trained_models/curiosity/mp3d \
-	  --habitat-config-file configs/exploration/ppo_pose_train.yaml \
-	  --eval-habitat-config-file configs/exploration/ppo_pose_val.yaml \
-	  --pretrained-il-model '' \
-	  --use-gae \
-	  --ppo-epoch 4 \
-	  --num-mini-batch 2 \
-	  --reward-scale 1e-3 \
-	  --icm-embedding-type policy-lstm \
-	  --normalize-icm-rewards True
+     --lr 1e-4 \
+     --seed 123 \
+     --num-processes 8 \
+     --num-steps 500 \
+     --num-rl-steps 100 \
+     --env-name habitat \
+     --save-interval 200 \
+     --eval-interval 200 \
+     --num-episodes 16000 \
+     --save-unique True \
+     --save-dir trained_models/curiosity/mp3d \
+     --log-dir trained_models/curiosity/mp3d \
+     --habitat-config-file configs/exploration/ppo_pose_train.yaml \
+     --eval-habitat-config-file configs/exploration/ppo_pose_val.yaml \
+     --pretrained-il-model '' \
+     --use-gae \
+     --ppo-epoch 4 \
+     --num-mini-batch 2 \
+     --reward-scale 1e-3 \
+     --icm-embedding-type policy-lstm \
+     --normalize-icm-rewards True
 ```
 
 ### Reconstruction-based exploration training
@@ -510,25 +510,25 @@ cd $EXPLORING_EXPLORATION
 mkdir -p trained_models/reconstruction/mp3d/pretraining
 
 python pretrain_reconstruction.py \
-      --lr 3e-5 \
-      --seed 123 \
-      --num-processes 8 \
-      --num-steps 500 \
-      --num-rl-steps 500 \
-      --env-name habitat \
-      --save-interval 200 \
-      --eval-interval 200 \
-      --save-unique True \
-      --num-episodes 16000 \
-      --save-dir trained_models/reconstruction/mp3d/pretraining \
-      --log-dir trained_models/reconstruction/mp3d/pretraining \
-      --habitat-config-file configs/pretrain_reconstruction/ppo_pose_train.yaml \
-      --eval-habitat-config-file configs/pretrain_reconstruction/ppo_pose_val.yaml \
-      --num-pose-refs 100 \
-      --clusters-path reconstruction_data_generation/mp3d/imagenet_clusters/clusters_00050_data.h5 \
-      --rec-loss-fn-K 3 \
-      --n-transformer-layers 2 \
-      --use-multi-gpu True
+     --lr 3e-5 \
+     --seed 123 \
+     --num-processes 8 \
+     --num-steps 500 \
+     --num-rl-steps 500 \
+     --env-name habitat \
+     --save-interval 200 \
+     --eval-interval 200 \
+     --save-unique True \
+     --num-episodes 16000 \
+     --save-dir trained_models/reconstruction/mp3d/pretraining \
+     --log-dir trained_models/reconstruction/mp3d/pretraining \
+     --habitat-config-file configs/pretrain_reconstruction/ppo_pose_train.yaml \
+     --eval-habitat-config-file configs/pretrain_reconstruction/ppo_pose_val.yaml \
+     --num-pose-refs 100 \
+     --clusters-path reconstruction_data_generation/mp3d/imagenet_clusters/clusters_00050_data.h5 \
+     --rec-loss-fn-K 3 \
+     --n-transformer-layers 2 \
+     --use-multi-gpu True
 ```
 
 For convenience, we provide a pre-trained reconstruction task-head in `$EXPLORING_EXPLORATION/pretrained_models/mp3d/pretrained_reconstruction/ckpt.pth`. The second phase is the training of the exploration policy. The exploration agent is rewarded for maximizing the reconstruction performance given a frozen, pre-trained reconstruction task-head.
@@ -541,30 +541,30 @@ cd $EXPLORING_EXPLORATION
 mkdir -p trained_models/reconstruction/mp3d/exploration_policy
 
 python train_reconstruction_exploration.py \
-    --lr 1e-5 \
-    --seed 123 \
-    --num-processes 8 \
-    --num-steps 500 \
-    --num-rl-steps 100 \
-    --env-name habitat \
-    --habitat-config-file configs/reconstruction_exploration/ppo_pose_train.yaml \
-    --eval-habitat-config-file configs/reconstruction_exploration/ppo_pose_val.yaml \
-    --save-interval 200 \
-    --eval-interval 200 \
-    --save-unique True \
-    --num-episodes 16000 \
-    --save-dir trained_models/reconstruction/mp3d/exploration_policy \
-    --log-dir trained_models/reconstruction/mp3d/exploration_policy \
-    --load-path-rec pretrained_models/mp3d/pretrained_reconsturction/ckpt.pth \
-    --pretrained-il-model '' \
-    --num-pose-refs 100 \
-    --use-gae \
-    --ppo-epoch 4 \
-    --num-mini-batch 2 \
-    --rec-reward-scale 1.0 \
-    --clusters-path reconstruction_data_generation/mp3d/imagenet_clusters/clusters_00050_data.h5 \
-    --n-transformer-layers 2 \
-    --rec-reward-interval 5
+     --lr 1e-5 \
+     --seed 123 \
+     --num-processes 8 \
+     --num-steps 500 \
+     --num-rl-steps 100 \
+     --env-name habitat \
+     --habitat-config-file configs/reconstruction_exploration/ppo_pose_train.yaml \
+     --eval-habitat-config-file configs/reconstruction_exploration/ppo_pose_val.yaml \
+     --save-interval 200 \
+     --eval-interval 200 \
+     --save-unique True \
+     --num-episodes 16000 \
+     --save-dir trained_models/reconstruction/mp3d/exploration_policy \
+     --log-dir trained_models/reconstruction/mp3d/exploration_policy \
+     --load-path-rec pretrained_models/mp3d/pretrained_reconsturction/ckpt.pth \
+     --pretrained-il-model '' \
+     --num-pose-refs 100 \
+     --use-gae \
+     --ppo-epoch 4 \
+     --num-mini-batch 2 \
+     --rec-reward-scale 1.0 \
+     --clusters-path reconstruction_data_generation/mp3d/imagenet_clusters/clusters_00050_data.h5 \
+     --n-transformer-layers 2 \
+     --rec-reward-interval 5
 ```
 
 

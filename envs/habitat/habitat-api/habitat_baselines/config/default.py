@@ -11,7 +11,7 @@ import numpy as np
 from habitat import get_config as get_task_config
 from habitat.config import Config as CN
 
-DEFAULT_CONFIG_DIR = "/vision/vision_users/srama/datasets/habitat/habitat-api/configs/"
+DEFAULT_CONFIG_DIR = "configs/"
 CONFIG_FILE_SEPARATOR = ","
 # -----------------------------------------------------------------------------
 # Config definition
