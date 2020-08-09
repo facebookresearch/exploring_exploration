@@ -1,0 +1,15 @@
+diff --git a/habitat_sim/simulator.py b/habitat_sim/simulator.py
+index df7b2af..f7edca6 100644
+--- a/habitat_sim/simulator.py
++++ b/habitat_sim/simulator.py
+@@ -151,6 +151,10 @@ class Simulator:
+             observations[sensor_uuid] = sensor.get_observation()
+         return observations
+
++    def get_specific_sensor_observations(self, sensor_uuid):
++        observations = self._sensors[sensor_uuid].get_observation()
++        return observations
++
+     def last_state(self):
+         return self._last_state
+

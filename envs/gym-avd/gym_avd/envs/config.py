@@ -1,0 +1,10 @@
+GYM_AVD_ROOT = "/private/home/sramakri/Research/ExploringExploration/a2c_discriminative_look_around/env/gym-avd"
+ROOT_DIR = "/private/home/sramakri/Research/ExploringExploration/a2c_discriminative_look_around/env/gym-avd/gym_avd/data/ActiveVisionDataset"
+CLUSTER_ROOT_DIR = f"{GYM_AVD_ROOT}/gym_avd/data/avd_clusters"
+AREAS_FILE = f"{GYM_AVD_ROOT}/gym_avd/data/environment_areas.json"
+OBJ_COUNTS_FILE = f"{GYM_AVD_ROOT}/gym_avd/data/object_counts_per_env.json"
+OBJ_PROPS_FILE = ""
+VALID_INSTANCES_ROOT_DIR = f"{GYM_AVD_ROOT}/gym_avd/data/valid_instances_per_env"
+SIZE_CLASSIFICATION_PATH = f"{GYM_AVD_ROOT}/gym_avd/data/size_classification.json.gz"
+POINTNAV_TEST_EPISODES_PATH = f"{GYM_AVD_ROOT}/gym_avd/data/tdn_test_episodes.json"
+MAX_STEPS = 200

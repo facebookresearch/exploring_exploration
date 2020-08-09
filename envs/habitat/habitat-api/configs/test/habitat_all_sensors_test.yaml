@@ -1,0 +1,27 @@
+ENVIRONMENT:
+  MAX_EPISODE_STEPS: 10
+SIMULATOR:
+  AGENT_0:
+    SENSORS: ['RGB_SENSOR', 'DEPTH_SENSOR']
+  RGB_SENSOR:
+    WIDTH: 256
+    HEIGHT: 256
+  DEPTH_SENSOR:
+    WIDTH: 256
+    HEIGHT: 256
+DATASET:
+  TYPE: PointNav-v1
+  SPLIT: train
+  DATA_PATH: data/datasets/pointnav/habitat-test-scenes/v1/{split}/{split}.json.gz
+TASK:
+  TYPE: Nav-v0
+  SUCCESS_DISTANCE: 0.2
+  SENSORS: ['POINTGOAL_SENSOR']
+  POINTGOAL_SENSOR:
+    TYPE: PointGoalSensor
+    GOAL_FORMAT: POLAR
+  MEASUREMENTS: ['SPL']
+  GOAL_SENSOR_UUID: pointgoal
+  SPL:
+    TYPE: SPL
+    SUCCESS_DISTANCE: 0.2

@@ -1,0 +1,30 @@
+ENVIRONMENT:
+  MAX_EPISODE_STEPS: 10
+SIMULATOR:
+  AGENT_0:
+    SENSORS: ['RGB_SENSOR', 'DEPTH_SENSOR']
+  RGB_SENSOR:
+    WIDTH: 84
+    HEIGHT: 84
+  DEPTH_SENSOR:
+    WIDTH: 84
+    HEIGHT: 84
+DATASET:
+  TYPE: PoseEstimation-v1
+  SPLIT: val
+  DATA_PATH: data/datasets/pose_estimation/gibson/v1/{split}/{split}.json.gz
+TASK:
+  TYPE: Pose-v0
+  SENSORS: ['POSE_RGB_SENSOR', 'POSE_DEPTH_SENSOR', 'POSE_REGRESS_SENSOR']
+  POSE_RGB_SENSOR:
+    TYPE: PoseEstimationRGBSensor
+    NREF: 20
+  POSE_DEPTH_SENSOR:
+    TYPE: PoseEstimationDepthSensor
+    NREF: 20
+  POSE_REGRESS_SENSOR:
+    TYPE: PoseEstimationRegressSensor
+    NREF: 20
+  MEASUREMENTS: ['OPSR', 'TOP_DOWN_MAP_POSE']
+  OPSR:
+    TYPE: OPSR

@@ -2,17 +2,16 @@
 This repository contains the code to run experiments from our work: [http://vision.cs.utexas.edu/projects/exploring-exploration/](http://vision.cs.utexas.edu/projects/exploring-exploration/) 
 
 ## Simulation environments
-This codebase supports experiments on Active Vision dataset and Matterport3D. The corresponding simulators can be installed from the following repositories:
+This codebase supports experiments on Active Vision dataset and Matterport3D. The corresponding simulators can be installed from the following directories:
 
-- Active Vision simulator: ...
-- Matterport3D simulator (via habitat-api): ...
+- Active Vision simulator: `envs/gym-avd`
+- Matterport3D simulator (via habitat-api): `envs/habitat`
 
 ## Installation instructions
-1. Clone the github repository and add to path.
+1. Clone this github repository and add to path.
 
 	```
-	git clone ...
-	cd exploring-exploration
+	cd exploring_exploration
 	export PYTHONPATH=$PWD:$PYTHONPATH
 	export EXPLORING_EXPLORATION=$PWD
 	```
@@ -45,14 +44,13 @@ We provide pre-trained models for different baselines and paradigms on both AVD 
 cd $EXPLORING_EXPLORATION
 mkdir pretrained_models
 cd pretrained_models
-wget .../pretrained_models.zip
-unzip -q pretrained_models.zip
-rm pretrained_models.zip
+wget https://dl.fbaipublicfiles.com/exploring-exploration/avd_pretrained_models.tar.gz
+wget https://dl.fbaipublicfiles.com/exploring-exploration/mp3d_pretrained_models.tar.gz
 ```
 
 ## Evaluating on visitation metrics
 
-We evaluate exploration using three visitation metrics: the amount of area / landmarks / objects visited during exploration. The `evaluate_visitation.py` script evaluates performance on the visitation metrics.  
+We evaluate exploration using three visitation metrics: the amount of area / landmarks / objects visited during exploration. The `evaluate_visitation.py` script evaluates performance on the visitation metrics.
 
 ### Evaluation on AVD
 ```
@@ -181,7 +179,7 @@ python -W ignore evaluate_pose_estimation.py \
 
 ## Evaluating on reconstruction
 
-The reconstruction task requires the agent to accurately reconstruct the concepts present at a set of reference poses in the environment. See Sec. 6 in the [supplementary](http://vision.cs.utexas.edu/projects/exploring-exploration/supp.pdf). We provide pre-trained reconstruction task-heads for AVD and MP3D which can be used for evaluation in `$EXPLORING_EXPLORATION/pretrained_models/*/pretrained_reconstruction/ckpt.pth`. We also provide the concept clusters extracted for both datasets in ...
+The reconstruction task requires the agent to accurately reconstruct the concepts present at a set of reference poses in the environment. See Sec. 6 in the [supplementary](http://vision.cs.utexas.edu/projects/exploring-exploration/supp.pdf). We provide pre-trained reconstruction task-heads for AVD and MP3D which can be used for evaluation in `$EXPLORING_EXPLORATION/pretrained_models/*/pretrained_reconstruction/ckpt.pth`. We also provide the concept clusters extracted for both datasets [here](https://dl.fbaipublicfiles.com/exploring-exploration/reconstruction_data.tar.gz).
 
 ### Evaluation on AVD
 
@@ -270,9 +268,9 @@ python -W ignore -u pretrain_imitation.py  \
 	  --agent-action-prob-factor 0.1 \
 	  --use-inflection-weighting True
 ```
-Different environments correspond to different oracles:  
-- `oracle-random`: set `env-name` to `avd-pose-random-oracle-v0`  
-- `oracle-landmarks`: set `env-name` to `avd-pose-landmarks-oracle-v0`  
+Different environments correspond to different oracles:
+- `oracle-random`: set `env-name` to `avd-pose-random-oracle-v0`
+- `oracle-landmarks`: set `env-name` to `avd-pose-landmarks-oracle-v0`
 - `oracle-objects`: set `env-name` to `avd-pose-objects-oracle-v0`
 
 In practice, we find that `oracle-landmarks` performs well across most metrics.
@@ -304,7 +302,7 @@ python -W ignore -u train_exploration.py \
 	  --smooth-coverage-reward-scale 0.0 \
 	  --novelty-reward-scale 0.0
 ```
-Smooth coverage and novelty agents can be trained by setting the corresponding reward coefficients to a non-zero value and zeroing out the rest. 
+Smooth coverage and novelty agents can be trained by setting the corresponding reward coefficients to a non-zero value and zeroing out the rest.
 
 ### Curiosity-based exploration training
 
@@ -337,7 +335,7 @@ python -W ignore -u train_curiosity_exploration.py \
 
 ### Reconstruction-based exploration training
 
-For training the reconstruction agent, there are two phases. The first phase is a pre-training of the reconstruction task-head. 
+For training the reconstruction agent, there are two phases. The first phase is a pre-training of the reconstruction task-head.
 
 ```
 cd $EXPLORING_EXPLORATION
@@ -620,4 +618,4 @@ For training reconstruction-based exploration agents and evaluating on the recon
 	tensorboard --logdir=.
 	```
 
-- To ensure reproducibility, we have provided the clusters we generated ... . Copying them to `reconstruction_data_generation/avd/imagenet_clusters/clusters_00030_data.h5` and `reconstruction_data_generation/mp3d/imagenet_clusters/clusters_00030_data.h5` will ensure that the script re-uses the same clusters for generating the visualizations.
+- To ensure reproducibility, we have provided the clusters we generated [here](https://dl.fbaipublicfiles.com/exploring-exploration/reconstruction_data.tar.gz). Copying them to `reconstruction_data_generation/avd/imagenet_clusters/clusters_00030_data.h5` and `reconstruction_data_generation/mp3d/imagenet_clusters/clusters_00030_data.h5` will ensure that the script re-uses the same clusters for generating the visualizations.
