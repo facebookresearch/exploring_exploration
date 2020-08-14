@@ -1,0 +1,8 @@
+einops
+gym
+h5py
+matplotlib
+opencv-python
+tensorboard
+tensorboardX
+scikit-learn

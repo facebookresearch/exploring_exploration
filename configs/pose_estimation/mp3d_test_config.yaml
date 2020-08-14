@@ -1,0 +1,54 @@
+ENVIRONMENT:
+  MAX_EPISODE_STEPS: 1001
+SIMULATOR:
+  TYPE: "Sim-v1"
+  AGENT_0:
+    SENSORS: ['RGB_SENSOR', 'DEPTH_SENSOR', 'FINE_OCC_SENSOR', 'COARSE_OCC_SENSOR']
+  ACTION_SPACE_CONFIG: "v2"
+  HABITAT_SIM_V0:
+    GPU_DEVICE_ID: 0
+  RGB_SENSOR:
+    WIDTH: 84
+    HEIGHT: 84
+  DEPTH_SENSOR:
+    WIDTH: 84
+    HEIGHT: 84
+  OCCUPANCY_MAPS:
+    MAP_SCALE: 0.1
+    MAP_SIZE: 800
+    MAX_DEPTH: 3
+    SMALL_MAP_RANGE: 20
+    LARGE_MAP_RANGE: 100
+    HEIGHT_LOWER: 0.2
+    HEIGHT_UPPER: 1.5
+  FINE_OCC_SENSOR:
+    WIDTH: 84
+    HEIGHT: 84
+  COARSE_OCC_SENSOR:
+    WIDTH: 84
+    HEIGHT: 84
+  OBJECT_ANNOTATIONS:
+    IS_AVAILABLE: True
+    PATH: 'environments/habitat/habitat-api/data/object_annotations/mp3d'
+TASK:
+  TYPE: Pose-v0
+  SENSORS: ['DELTA_SENSOR', 'ORACLE_ACTION_SENSOR', 'COLLISION_SENSOR', 'POSE_RGB_SENSOR', 'POSE_REGRESS_SENSOR']
+  POSE_RGB_SENSOR:
+    NREF: 20
+  POSE_REGRESS_SENSOR:
+    NREF: 20
+  ORACLE_ACTION_SENSOR:
+    ORACLE_TYPE: 'random'
+  MEASUREMENTS: ['AREA_COVERED', 'TOP_DOWN_MAP_POSE', 'OPSR', 'OBJECTS_COVERED_GEOMETRIC']
+  TOP_DOWN_MAP_POSE:
+    TYPE: TopDownMapPose
+    FOG_OF_WAR:
+      DRAW: True
+      FOV: 90
+      VISIBILITY_DIST: 4.0
+DATASET:
+  TYPE: PoseEstimation-v1
+  SPLIT: test
+  SCENES_DIR: environments/habitat/habitat-api/data/scene_datasets
+  DATA_PATH: environments/habitat/habitat-api/data/datasets/pose_estimation/mp3d/v1/{split}/{split}.json.gz
+  SHUFFLE_DATASET: False

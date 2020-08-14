@@ -1,0 +1,8 @@
+BASE_TASK_CONFIG_PATH: "configs/pretrain_reconstruction/mp3d_train_config.yaml"
+TRAINER:
+  TRAINER_NAME: "ppo"
+  RL:
+    PPO:
+      # general options
+      num_processes: 8
+      task_config: "configs/pretrain_reconstruction/mp3d_train_config.yaml"

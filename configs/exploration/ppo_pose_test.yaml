@@ -1,0 +1,9 @@
+BASE_TASK_CONFIG_PATH: "configs/exploration/mp3d_test_config.yaml"
+TRAINER:
+  TRAINER_NAME: "ppo"
+  RL:
+    PPO:
+      # general options
+      num_processes: 1
+      task_config: "configs/exploration/mp3d_test_config.yaml"
+      sensors: "RGB_SENSOR,DEPTH_SENSOR,FINE_OCC_SENSOR,COARSE_OCC_SENSOR"

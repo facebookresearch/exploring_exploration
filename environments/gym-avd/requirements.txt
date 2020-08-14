@@ -1,0 +1,8 @@
+gym
+h5py
+imageio
+networkx
+numpy
+opencv-python
+Pillow
+scipy

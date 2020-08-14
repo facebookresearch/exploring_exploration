@@ -1,0 +1,9 @@
+BASE_TASK_CONFIG_PATH: "configs/pretrain_imitation/mp3d_train_oracle_landmarks_config.yaml"
+TRAINER:
+  TRAINER_NAME: "ppo"
+  RL:
+    PPO:
+      # general options
+      num_processes: 8
+      task_config: "configs/pretrain_imitation/mp3d_train_oracle_landmarks_config.yaml"
+      sensors: "RGB_SENSOR,DEPTH_SENSOR,FINE_OCC_SENSOR,COARSE_OCC_SENSOR"
