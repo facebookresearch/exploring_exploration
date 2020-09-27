@@ -431,7 +431,7 @@ python -W ignore -u pretrain_imitation.py  \
      --num-episodes 16000 \
      --save-dir trained_models/imitation_learning/mp3d/ \
      --log-dir trained_models/imitation_learning/mp3d/ \
-     --habitat-config-file configs/pretrain_imitation/ppo_pose_train_random_oracle.yaml \
+     --habitat-config-file configs/pretrain_imitation/ppo_pose_train_oracle_random.yaml \
      --eval-habitat-config-file configs/exploration/ppo_pose_val.yaml \
      --agent-start-action-prob 0.0 \
      --agent-end-action-prob 0.5 \

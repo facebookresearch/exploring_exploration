@@ -132,6 +132,9 @@ def get_args():
     parser.add_argument(
         "--encoder-type", default="rgb+map", type=str, help="can be [ rgb | rgb+map ]"
     )
+    parser.add_argument(
+        "--fix-cnn", default=True, type=str2bool, help="Freeze CNN encoders for policy"
+    )
 
     ############################# Pose prediction arguments ###############################
     parser.add_argument("--map-size", type=int, default=21, help="dimension of memory")
