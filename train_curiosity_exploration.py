@@ -146,11 +146,11 @@ def main():
     if args.icm_embedding_type == "imagenet":
         icm_phi.to(device)
     icm_fd.to(device)
-    encoder.train()
-    actor_critic.train()
+    encoder.eval()
+    actor_critic.eval()
     if args.icm_embedding_type == "imagenet":
         icm_phi.eval()  # Do not train/the feature model for ICM
-    icm_fd.train()
+    icm_fd.eval()
     # =================== Define ICM training algorithm ====================
     icm_optimizer = optim.Adam(icm_fd.parameters(), lr=args.lr)
     # Maintain a running mean of the variance of returns after every
@@ -378,10 +378,14 @@ def main():
                 rollouts_policy.compute_returns(
                     next_value, args.use_gae, args.gamma, args.tau,
                 )
+                encoder.train()
+                actor_critic.train()
                 # Update model
                 rl_losses = rl_agent.update(rollouts_policy)
                 # Refresh rollouts
                 rollouts_policy.after_update()
+                encoder.eval()
+                actor_critic.eval()
 
         # ============ Update the ICM dynamics model using past data ===============
         icm_fd.train()
@@ -410,6 +414,7 @@ def main():
             avg_fd_loss_count += phi_st1_hat.shape[0]
         avg_fd_loss /= avg_fd_loss_count
         all_losses = {"icm_fd_loss": avg_fd_loss}
+        icm_fd.eval()
 
         # =================== Save model ====================
         if (j + 1) % args.save_interval == 0 and args.save_dir != "":

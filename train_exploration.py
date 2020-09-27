@@ -131,8 +131,8 @@ def main():
         j_start = -1
     encoder.to(device)
     actor_critic.to(device)
-    encoder.train()
-    actor_critic.train()
+    encoder.eval()
+    actor_critic.eval()
 
     # =================== Define RL training algorithm ====================
     rl_algo_config = {}
@@ -322,10 +322,14 @@ def main():
                 rollouts_policy.compute_returns(
                     next_value, args.use_gae, args.gamma, args.tau
                 )
+                encoder.train()
+                actor_critic.train()
                 # Update model
                 rl_losses = rl_agent.update(rollouts_policy)
                 # Refresh rollouts
                 rollouts_policy.after_update()
+                encoder.eval()
+                actor_critic.eval()
 
         # =================== Save model ====================
         if (j + 1) % args.save_interval == 0 and args.save_dir != "":
