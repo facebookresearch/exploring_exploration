@@ -23,6 +23,7 @@ from exploring_exploration.utils.eval import evaluate_visitation
 from exploring_exploration.utils.storage import RolloutStorageImitation
 from exploring_exploration.algo import Imitation
 from tensorboardX import SummaryWriter
+from collections import defaultdict, deque
 
 args = get_args()
 
@@ -144,6 +145,9 @@ def main():
     il_algo_config["use_inflection_weighting"] = args.use_inflection_weighting
 
     il_agent = Imitation(il_algo_config)
+
+    # =================== Define stats buffer ====================
+    train_metrics_tracker = defaultdict(lambda: deque(maxlen=10))
 
     # =================== Define rollouts ====================
     rollouts_policy = RolloutStorageImitation(
@@ -340,8 +344,11 @@ def main():
             train_metrics["area_covered"] = np.mean(per_proc_area)
             train_metrics["collisions"] = np.mean(episode_collisions)
             for k, v in train_metrics.items():
-                logging.info(f"{k}: {v:.3f}")
-                tbwriter.add_scalar(f"train_metrics/{k}", v, j)
+                train_metrics_tracker[k].append(v)
+
+            for k, v in train_metrics_tracker.items():
+                logging.info(f"{k}: {np.mean(v).item():.3f}")
+                tbwriter.add_scalar(f"train_metrics/{k}", np.mean(v).item(), j)
 
         # =================== Evaluate models ====================
         if args.eval_interval is not None and (j + 1) % args.eval_interval == 0:

@@ -43,6 +43,8 @@ from exploring_exploration.utils.reconstruction_eval import evaluate_reconstruct
 from einops import rearrange
 from tensorboardX import SummaryWriter
 
+from collections import defaultdict, deque
+
 args = get_args()
 
 num_updates = (args.num_episodes // args.num_processes) + 1
@@ -169,7 +171,7 @@ def main():
     save_path = os.path.join(args.save_dir, "checkpoints")
     checkpoint_path = os.path.join(save_path, "ckpt.latest.pth")
     if os.path.isfile(checkpoint_path):
-        print("Resuming from old model!")
+        logging.info("Resuming from old model!")
         loaded_states = torch.load(checkpoint_path)
         encoder_state, actor_critic_state, j_start = loaded_states
         encoder.load_state_dict(encoder_state)
@@ -214,6 +216,9 @@ def main():
     rl_algo_config["use_collision_embedding"] = args.use_collision_embedding
 
     rl_agent = PPO(rl_algo_config)
+
+    # =================== Define stats buffer ====================
+    train_metrics_tracker = defaultdict(lambda: deque(maxlen=10))
 
     # =================== Define rollouts ====================
     rollouts_recon = RolloutStorageReconstruction(
@@ -396,17 +401,10 @@ def main():
                     1
                 )  # / (tgt_masks.sum(dim=1) + 1e-8)
                 final_rec_rewards = rec_rewards - prev_rec_rewards
-                # if step == 0:
-                #    print(
-                #        "==============================================================="
-                #    )
                 # Ignore the exploration reward at T=0 since it will be a huge spike
                 if (("avd" in args.env_name) and (step != 0)) or (
                     ("habitat" in args.env_name) and (step > 20)
                 ):
-                    # print(
-                    #    "Rec rewards[0]: {:.2f}".format(final_rec_rewards[0, 0].item())
-                    # )
                     reward_exploration += (
                         final_rec_rewards.cpu() * args.rec_reward_scale
                     )
@@ -496,7 +494,7 @@ def main():
         if j % args.log_interval == 0:
             end = time.time()
             fps = int(total_num_steps / (end - start))
-            print(f"===> Updates {j}, #steps {total_num_steps}, FPS {fps}")
+            logging.info(f"===> Updates {j}, #steps {total_num_steps}, FPS {fps}")
             train_metrics = rl_losses
             train_metrics["exploration_rewards"] = (
                 np.mean(episode_expl_rewards) * rec_reward_interval / args.num_steps
@@ -510,9 +508,14 @@ def main():
             train_metrics["collisions"] = np.mean(episode_collisions)
             train_metrics["novelty_rewards"] = np.mean(novelty_tracker)
             train_metrics["smooth_coverage_rewards"] = np.mean(smooth_coverage_tracker)
+
+            # Update statistics
             for k, v in train_metrics.items():
-                print(f"{k}: {v:.3f}")
-                tbwriter.add_scalar(f"train_metrics/{k}", v, j)
+                train_metrics_tracker[k].append(v)
+
+            for k, v in train_metrics_tracker.items():
+                logging.info(f"{k}: {np.mean(v).item():.3f}")
+                tbwriter.add_scalar(f"train_metrics/{k}", np.mean(v).item(), j)
 
         # =================== Evaluate models ====================
         if args.eval_interval is not None and (j + 1) % args.eval_interval == 0:
