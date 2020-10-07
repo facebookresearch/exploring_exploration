@@ -44,7 +44,7 @@ Our project uses a modified version of the original [habitat-lab](https://github
   cd $HABITAT_ROOT
   cp habitat_sim.patch habitat-api
   cd habitat-api
-  git apply habitat_api.patch
+  patch -p0 < habitat_api.patch
   ```
 
 4. Download the task datasets.
