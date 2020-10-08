@@ -79,6 +79,8 @@ def main():
         devices = [int(dev) for dev in os.environ["CUDA_VISIBLE_DEVICES"].split(",")]
         # Devices need to be indexed between 0 to N-1
         devices = [dev for dev in range(len(devices))]
+        if len(devices) > 2:
+            devices = devices[1:]
         envs = make_vec_envs_habitat(
             args.habitat_config_file, device, devices, seed=args.seed
         )
@@ -169,7 +171,7 @@ def main():
     save_path = os.path.join(args.save_dir, "checkpoints")
     checkpoint_path = os.path.join(save_path, "ckpt.latest.pth")
     if os.path.isfile(checkpoint_path):
-        print("Resuming from old model!")
+        logging.info("Resuming from old model!")
         loaded_states = torch.load(checkpoint_path)
         encoder_state, actor_critic_state, j_start = loaded_states
         encoder.load_state_dict(encoder_state)
@@ -399,17 +401,10 @@ def main():
                     1
                 )  # / (tgt_masks.sum(dim=1) + 1e-8)
                 final_rec_rewards = rec_rewards - prev_rec_rewards
-                # if step == 0:
-                #    print(
-                #        "==============================================================="
-                #    )
                 # Ignore the exploration reward at T=0 since it will be a huge spike
                 if (("avd" in args.env_name) and (step != 0)) or (
                     ("habitat" in args.env_name) and (step > 20)
                 ):
-                    # print(
-                    #    "Rec rewards[0]: {:.2f}".format(final_rec_rewards[0, 0].item())
-                    # )
                     reward_exploration += (
                         final_rec_rewards.cpu() * args.rec_reward_scale
                     )
@@ -499,7 +494,7 @@ def main():
         if j % args.log_interval == 0:
             end = time.time()
             fps = int(total_num_steps / (end - start))
-            print(f"===> Updates {j}, #steps {total_num_steps}, FPS {fps}")
+            logging.info(f"===> Updates {j}, #steps {total_num_steps}, FPS {fps}")
             train_metrics = rl_losses
             train_metrics["exploration_rewards"] = (
                 np.mean(episode_expl_rewards) * rec_reward_interval / args.num_steps

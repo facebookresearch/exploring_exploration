@@ -68,6 +68,8 @@ def main():
         devices = [int(dev) for dev in os.environ["CUDA_VISIBLE_DEVICES"].split(",")]
         # Devices need to be indexed between 0 to N-1
         devices = [dev for dev in range(len(devices))]
+        if len(devices) > 2:
+            devices = devices[1:]
         envs = make_vec_envs_habitat(
             args.habitat_config_file, device, devices, seed=args.seed
         )
