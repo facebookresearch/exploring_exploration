@@ -443,9 +443,9 @@ python -W ignore -u pretrain_imitation.py  \
 
 Different oracles can be selected by varying the `ORACLE_TYPE` variable in the configuration file. The following config files correspond to different oracles:
 
-- `oracle-random`: `configs/pretrain_imitation/ppo_pose_train_random_oracle.yaml`
-- `oracle-landmarks`: `configs/pretrain_imitation/ppo_pose_train_landmarks_oracle.yaml`
-- `oracle-objects`: `configs/pretrain_imitation/ppo_pose_train_objects_oracle.yaml`
+- `oracle-random`: `configs/pretrain_imitation/ppo_pose_train_oracle_random.yaml`
+- `oracle-landmarks`: `configs/pretrain_imitation/ppo_pose_train_oracle_landmarks.yaml`
+- `oracle-objects`: `configs/pretrain_imitation/ppo_pose_train_oracle_objects.yaml`
 
 ### Coverage + Novelty exploration training
 For training the coverage and novelty agents, we use the `train_exploration.py` script. For example, the command to train an area-coverage agent:
