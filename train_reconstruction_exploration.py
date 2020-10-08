@@ -185,8 +185,8 @@ def main():
     decoder.to(device)
     feature_network.to(device)
     pose_encoder.to(device)
-    encoder.train()
-    actor_critic.train()
+    encoder.eval()
+    actor_critic.eval()
     # decoder, feature_network, pose_encoder are frozen during policy training
     decoder.eval()
     feature_network.eval()
@@ -462,11 +462,14 @@ def main():
                     next_value, args.use_gae, args.gamma, args.tau
                 )
 
+                encoder.train()
+                actor_critic.train()
                 # Update model
                 rl_losses = rl_agent.update(rollouts_policy)
-
                 # Refresh rollouts_policy
                 rollouts_policy.after_update()
+                encoder.eval()
+                actor_critic.eval()
 
         # =================== Save model ====================
         if (j + 1) % args.save_interval == 0 and args.save_dir != "":
@@ -562,11 +565,6 @@ def main():
             val_metrics, _ = evaluate_reconstruction(
                 models, eval_envs, eval_config, device
             )
-            decoder.eval()
-            pose_encoder.eval()
-            feature_network.eval()
-            actor_critic.train()
-            encoder.train()
             for k, v in val_metrics.items():
                 tbwriter.add_scalar(f"val_metrics/{k}", v, j)
 

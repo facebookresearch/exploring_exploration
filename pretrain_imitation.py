@@ -124,8 +124,8 @@ def main():
         j_start = -1
     actor_critic.to(device)
     encoder.to(device)
-    actor_critic.train()
-    encoder.train()
+    actor_critic.eval()
+    encoder.eval()
 
     # =================== Define IL training algorithm ====================
     il_algo_config = {}
@@ -299,10 +299,14 @@ def main():
 
             # Update IL policy
             if (step + 1) % args.num_rl_steps == 0:
+                actor_critic.train()
+                encoder.train()
                 # Update model
                 il_losses = il_agent.update(rollouts_policy)
                 # Refresh rollouts
                 rollouts_policy.after_update()
+                actor_critic.eval()
+                encoder.eval()
 
         # =================== Save model ====================
         if (j + 1) % args.save_interval == 0 and args.save_dir != "":

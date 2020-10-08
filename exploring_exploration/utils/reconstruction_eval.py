@@ -277,8 +277,6 @@ def evaluate_reconstruction_oracle(
             rollouts.insert(obs_feat, obs_odometer)
 
     envs.close()
-    decoder.train()
-    pose_encoder.train()
 
     if multi_step:
         metrics = {interval: {} for interval in interval_steps}
@@ -1039,11 +1037,6 @@ def evaluate_reconstruction(
         )
 
     envs.close()
-    decoder.train()
-    pose_encoder.train()
-    if use_policy:
-        encoder.train()
-        actor_critic.train()
 
     if multi_step:
         metrics = {interval: {} for interval in interval_steps}
