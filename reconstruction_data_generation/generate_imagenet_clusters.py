@@ -99,7 +99,7 @@ def main(args):
     device = torch.device("cuda:0" if args.cuda else "cpu")
 
     # Create model
-    net = FeatureNetwork(args.normalize_embedding)
+    net = FeatureNetwork()
     net.to(device)
     net.eval()
 
