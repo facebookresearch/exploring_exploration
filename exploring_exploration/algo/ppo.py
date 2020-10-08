@@ -37,7 +37,12 @@ class PPO:
         self.use_collision_embedding = config["use_collision_embedding"]
 
         self.optimizer = optim.Adam(
-            chain(self.encoder.parameters(), self.actor_critic.parameters()),
+            list(
+                filter(
+                    lambda p: p.requires_grad,
+                    chain(self.encoder.parameters(), self.actor_critic.parameters()),
+                )
+            ),
             lr=lr,
             eps=eps,
         )
