@@ -125,7 +125,12 @@ def main():
     )
     feature_network = FeatureNetwork()
     pose_encoder = PoseEncoder()
-    encoder = RGBEncoder() if args.encoder_type == "rgb" else MapRGBEncoder()
+    if args.encoder_type == "rgb":
+        encoder = RGBEncoder(fix_cnn=args.fix_cnn)
+    elif args.encoder_type == "rgb+map":
+        encoder = MapRGBEncoder(fix_cnn=args.fix_cnn)
+    else:
+        raise ValueError(f"encoder_type {args.encoder_type} not defined!")
     action_config = (
         {"nactions": envs.action_space.n, "embedding_size": args.action_embedding_size}
         if args.use_action_embedding
