@@ -43,6 +43,8 @@ from exploring_exploration.utils.reconstruction_eval import evaluate_reconstruct
 from einops import rearrange
 from tensorboardX import SummaryWriter
 
+from collections import defaultdict, deque
+
 args = get_args()
 
 num_updates = (args.num_episodes // args.num_processes) + 1
@@ -212,6 +214,9 @@ def main():
     rl_algo_config["use_collision_embedding"] = args.use_collision_embedding
 
     rl_agent = PPO(rl_algo_config)
+
+    # =================== Define stats buffer ====================
+    train_metrics_tracker = defaultdict(lambda: deque(maxlen=10))
 
     # =================== Define rollouts ====================
     rollouts_recon = RolloutStorageReconstruction(
@@ -508,9 +513,14 @@ def main():
             train_metrics["collisions"] = np.mean(episode_collisions)
             train_metrics["novelty_rewards"] = np.mean(novelty_tracker)
             train_metrics["smooth_coverage_rewards"] = np.mean(smooth_coverage_tracker)
+
+            # Update statistics
             for k, v in train_metrics.items():
-                print(f"{k}: {v:.3f}")
-                tbwriter.add_scalar(f"train_metrics/{k}", v, j)
+                train_metrics_tracker[k].append(v)
+
+            for k, v in train_metrics_tracker.items():
+                logging.info(f"{k}: {np.mean(v).item():.3f}")
+                tbwriter.add_scalar(f"train_metrics/{k}", np.mean(v).item(), j)
 
         # =================== Evaluate models ====================
         if args.eval_interval is not None and (j + 1) % args.eval_interval == 0:
