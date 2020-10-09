@@ -36,7 +36,7 @@ This directory contains the code to an [OpenAI gym](https://gym.openai.com/)-bas
  cd $GYM_AVD_ROOT/gym_avd
  mkdir data
  cd data
- wget https://dl.fbaipublicfiles.com/exploring-exploration/avd_extra_data.tar.gz -o data.tar.gz
+ wget https://dl.fbaipublicfiles.com/exploring-exploration/avd_extra_data.tar.gz -O data.tar.gz
  tar -xvf data.tar.gz
  rm data.tar.gz
  ```

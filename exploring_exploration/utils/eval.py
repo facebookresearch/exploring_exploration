@@ -465,10 +465,6 @@ def evaluate_pose(
         )
 
     envs.close()
-    pose_head.train()
-    if use_policy:
-        encoder.train()
-        actor_critic.train()
 
     if multi_step:
         metrics = {interval: {} for interval in interval_steps}
@@ -893,10 +889,6 @@ def evaluate_tdn_astar(models, envs, config, device, visualize_policy=False):
 
     envs.close()
 
-    if use_policy:
-        encoder.train()
-        actor_critic.train()
-
     # Fill in per-episode statistics
     total_episodes = len(nav_error_all)
     per_episode_statistics = []
@@ -1293,10 +1285,6 @@ def evaluate_tdn_hierarchical_astar(
 
     envs.close()
 
-    if use_policy:
-        encoder.train()
-        actor_critic.train()
-
     # Fill in per-episode statistics
     total_episodes = len(nav_error_all)
     per_episode_statistics = []
@@ -1692,9 +1680,6 @@ def evaluate_visitation(
         )
 
     envs.close()
-    if use_policy:
-        encoder.train()
-        actor_critic.train()
 
     if multi_step:
         metrics = {interval: {} for interval in interval_steps}

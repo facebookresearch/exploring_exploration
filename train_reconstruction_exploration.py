@@ -43,6 +43,8 @@ from exploring_exploration.utils.reconstruction_eval import evaluate_reconstruct
 from einops import rearrange
 from tensorboardX import SummaryWriter
 
+from collections import defaultdict, deque
+
 args = get_args()
 
 num_updates = (args.num_episodes // args.num_processes) + 1
@@ -77,6 +79,8 @@ def main():
         devices = [int(dev) for dev in os.environ["CUDA_VISIBLE_DEVICES"].split(",")]
         # Devices need to be indexed between 0 to N-1
         devices = [dev for dev in range(len(devices))]
+        if len(devices) > 2:
+            devices = devices[1:]
         envs = make_vec_envs_habitat(
             args.habitat_config_file, device, devices, seed=args.seed
         )
@@ -125,7 +129,12 @@ def main():
     )
     feature_network = FeatureNetwork()
     pose_encoder = PoseEncoder()
-    encoder = RGBEncoder() if args.encoder_type == "rgb" else MapRGBEncoder()
+    if args.encoder_type == "rgb":
+        encoder = RGBEncoder(fix_cnn=args.fix_cnn)
+    elif args.encoder_type == "rgb+map":
+        encoder = MapRGBEncoder(fix_cnn=args.fix_cnn)
+    else:
+        raise ValueError(f"encoder_type {args.encoder_type} not defined!")
     action_config = (
         {"nactions": envs.action_space.n, "embedding_size": args.action_embedding_size}
         if args.use_action_embedding
@@ -162,7 +171,7 @@ def main():
     save_path = os.path.join(args.save_dir, "checkpoints")
     checkpoint_path = os.path.join(save_path, "ckpt.latest.pth")
     if os.path.isfile(checkpoint_path):
-        print("Resuming from old model!")
+        logging.info("Resuming from old model!")
         loaded_states = torch.load(checkpoint_path)
         encoder_state, actor_critic_state, j_start = loaded_states
         encoder.load_state_dict(encoder_state)
@@ -180,8 +189,8 @@ def main():
     decoder.to(device)
     feature_network.to(device)
     pose_encoder.to(device)
-    encoder.train()
-    actor_critic.train()
+    encoder.eval()
+    actor_critic.eval()
     # decoder, feature_network, pose_encoder are frozen during policy training
     decoder.eval()
     feature_network.eval()
@@ -207,6 +216,9 @@ def main():
     rl_algo_config["use_collision_embedding"] = args.use_collision_embedding
 
     rl_agent = PPO(rl_algo_config)
+
+    # =================== Define stats buffer ====================
+    train_metrics_tracker = defaultdict(lambda: deque(maxlen=10))
 
     # =================== Define rollouts ====================
     rollouts_recon = RolloutStorageReconstruction(
@@ -389,17 +401,10 @@ def main():
                     1
                 )  # / (tgt_masks.sum(dim=1) + 1e-8)
                 final_rec_rewards = rec_rewards - prev_rec_rewards
-                # if step == 0:
-                #    print(
-                #        "==============================================================="
-                #    )
                 # Ignore the exploration reward at T=0 since it will be a huge spike
                 if (("avd" in args.env_name) and (step != 0)) or (
                     ("habitat" in args.env_name) and (step > 20)
                 ):
-                    # print(
-                    #    "Rec rewards[0]: {:.2f}".format(final_rec_rewards[0, 0].item())
-                    # )
                     reward_exploration += (
                         final_rec_rewards.cpu() * args.rec_reward_scale
                     )
@@ -457,11 +462,14 @@ def main():
                     next_value, args.use_gae, args.gamma, args.tau
                 )
 
+                encoder.train()
+                actor_critic.train()
                 # Update model
                 rl_losses = rl_agent.update(rollouts_policy)
-
                 # Refresh rollouts_policy
                 rollouts_policy.after_update()
+                encoder.eval()
+                actor_critic.eval()
 
         # =================== Save model ====================
         if (j + 1) % args.save_interval == 0 and args.save_dir != "":
@@ -486,7 +494,7 @@ def main():
         if j % args.log_interval == 0:
             end = time.time()
             fps = int(total_num_steps / (end - start))
-            print(f"===> Updates {j}, #steps {total_num_steps}, FPS {fps}")
+            logging.info(f"===> Updates {j}, #steps {total_num_steps}, FPS {fps}")
             train_metrics = rl_losses
             train_metrics["exploration_rewards"] = (
                 np.mean(episode_expl_rewards) * rec_reward_interval / args.num_steps
@@ -500,9 +508,14 @@ def main():
             train_metrics["collisions"] = np.mean(episode_collisions)
             train_metrics["novelty_rewards"] = np.mean(novelty_tracker)
             train_metrics["smooth_coverage_rewards"] = np.mean(smooth_coverage_tracker)
+
+            # Update statistics
             for k, v in train_metrics.items():
-                print(f"{k}: {v:.3f}")
-                tbwriter.add_scalar(f"train_metrics/{k}", v, j)
+                train_metrics_tracker[k].append(v)
+
+            for k, v in train_metrics_tracker.items():
+                logging.info(f"{k}: {np.mean(v).item():.3f}")
+                tbwriter.add_scalar(f"train_metrics/{k}", np.mean(v).item(), j)
 
         # =================== Evaluate models ====================
         if args.eval_interval is not None and (j + 1) % args.eval_interval == 0:
@@ -557,11 +570,6 @@ def main():
             val_metrics, _ = evaluate_reconstruction(
                 models, eval_envs, eval_config, device
             )
-            decoder.eval()
-            pose_encoder.eval()
-            feature_network.eval()
-            actor_critic.train()
-            encoder.train()
             for k, v in val_metrics.items():
                 tbwriter.add_scalar(f"val_metrics/{k}", v, j)
 

@@ -136,8 +136,8 @@ def main():
     decoder.to(device)
     pose_encoder.to(device)
     feature_network.to(device)
-    decoder.train()
-    pose_encoder.train()
+    decoder.eval()
+    pose_encoder.eval()
     feature_network.eval()  # Feature network is frozen
 
     # =================== Define decoder training algorithm ====================
@@ -233,11 +233,15 @@ def main():
             obs_odometer = rollouts.obs_odometer[pstep] * masks + obs_odometer
             # Update rollouts
             rollouts.insert(obs_feat, obs_odometer)
-            # Update decoder
             if (step + 1) % args.num_rl_steps == 0:
+                decoder.train()
+                pose_encoder.train()
+                # Update decoder
                 losses = reconstruction_algo.update(rollouts)
                 # Refresh rollouts
                 rollouts.after_update()
+                decoder.eval()
+                pose_encoder.eval()
 
         # =================== Save model ====================
         if (j + 1) % args.save_interval == 0 and args.save_dir != "":

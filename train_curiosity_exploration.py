@@ -32,6 +32,7 @@ from exploring_exploration.utils.eval import evaluate_visitation
 from exploring_exploration.utils.storage import RolloutStoragePPO
 from exploring_exploration.algo import PPO
 from tensorboardX import SummaryWriter
+from collections import defaultdict, deque
 
 args = get_args()
 
@@ -67,6 +68,8 @@ def main():
         devices = [int(dev) for dev in os.environ["CUDA_VISIBLE_DEVICES"].split(",")]
         # Devices need to be indexed between 0 to N-1
         devices = [dev for dev in range(len(devices))]
+        if len(devices) > 2:
+            devices = devices[1:]
         envs = make_vec_envs_habitat(
             args.habitat_config_file, device, devices, seed=args.seed
         )
@@ -93,7 +96,12 @@ def main():
     args.obs_shape = envs.observation_space.spaces["im"].shape
 
     # =================== Create models ====================
-    encoder = RGBEncoder() if args.encoder_type == "rgb" else MapRGBEncoder()
+    if args.encoder_type == "rgb":
+        encoder = RGBEncoder(fix_cnn=args.fix_cnn)
+    elif args.encoder_type == "rgb+map":
+        encoder = MapRGBEncoder(fix_cnn=args.fix_cnn)
+    else:
+        raise ValueError(f"encoder_type {args.encoder_type} not defined!")
     action_config = (
         {"nactions": envs.action_space.n, "embedding_size": args.action_embedding_size}
         if args.use_action_embedding
@@ -139,11 +147,11 @@ def main():
     if args.icm_embedding_type == "imagenet":
         icm_phi.to(device)
     icm_fd.to(device)
-    encoder.train()
-    actor_critic.train()
+    encoder.eval()
+    actor_critic.eval()
     if args.icm_embedding_type == "imagenet":
         icm_phi.eval()  # Do not train/the feature model for ICM
-    icm_fd.train()
+    icm_fd.eval()
     # =================== Define ICM training algorithm ====================
     icm_optimizer = optim.Adam(icm_fd.parameters(), lr=args.lr)
     # Maintain a running mean of the variance of returns after every
@@ -170,6 +178,9 @@ def main():
     rl_algo_config["use_collision_embedding"] = args.use_collision_embedding
 
     rl_agent = PPO(rl_algo_config)
+
+    # =================== Define stats buffer ====================
+    train_metrics_tracker = defaultdict(lambda: deque(maxlen=10))
 
     # =================== Define rollouts ====================
     rollouts_policy = RolloutStoragePPO(
@@ -371,10 +382,14 @@ def main():
                 rollouts_policy.compute_returns(
                     next_value, args.use_gae, args.gamma, args.tau,
                 )
+                encoder.train()
+                actor_critic.train()
                 # Update model
                 rl_losses = rl_agent.update(rollouts_policy)
                 # Refresh rollouts
                 rollouts_policy.after_update()
+                encoder.eval()
+                actor_critic.eval()
 
         # ============ Update the ICM dynamics model using past data ===============
         icm_fd.train()
@@ -403,6 +418,7 @@ def main():
             avg_fd_loss_count += phi_st1_hat.shape[0]
         avg_fd_loss /= avg_fd_loss_count
         all_losses = {"icm_fd_loss": avg_fd_loss}
+        icm_fd.eval()
 
         # =================== Save model ====================
         if (j + 1) % args.save_interval == 0 and args.save_dir != "":
@@ -440,9 +456,13 @@ def main():
             train_metrics["novelty_rewards"] = np.mean(novelty_tracker)
             train_metrics["smooth_coverage_rewards"] = np.mean(smooth_coverage_tracker)
 
+            # Update statistics
             for k, v in train_metrics.items():
-                logging.info(f"{k}: {v:.3f}")
-                tbwriter.add_scalar(f"train_metrics/{k}", v, j)
+                train_metrics_tracker[k].append(v)
+
+            for k, v in train_metrics_tracker.items():
+                logging.info(f"{k}: {np.mean(v).item():.3f}")
+                tbwriter.add_scalar(f"train_metrics/{k}", np.mean(v).item(), j)
 
         # =================== Evaluate models ====================
         if args.eval_interval is not None and (j + 1) % args.eval_interval == 0:
