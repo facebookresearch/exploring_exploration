@@ -1,5 +1,10 @@
 # An Exploration of Embodied Visual Exploration
-This repository contains the code to run experiments from our work: [An Exploration of Embodied Visual Exploration](http://vision.cs.utexas.edu/projects/exploring-exploration/).
+This repository contains the code to run experiments from [our IJCV publication](https://link.springer.com/article/10.1007/s11263-021-01437-z):
+
+[An Exploration of Embodied Visual Exploration](http://vision.cs.utexas.edu/projects/exploring-exploration/)  
+Santhosh K. Ramakrishnan, Dinesh Jayaraman, Kristen Grauman  
+International Journal of Computer Vision, 2021
+
 <p align="center">
   <img width = "60%" src='assets/exploring_exploration.png' />
   </p>
