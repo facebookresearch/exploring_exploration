@@ -685,13 +685,13 @@ The training code is based on the [PyTorch RL library](https://github.com/ikostr
 
 # Citation
 ```
-@misc{ramakrishnan2020exploration,
-    title={An Exploration of Embodied Visual Exploration},
-    author={Santhosh K. Ramakrishnan and Dinesh Jayaraman and Kristen Grauman},
-    year={2020},
-    eprint={2001.02192},
-    archivePrefix={arXiv},
-    primaryClass={cs.CV}
+@article {ramakrishnan2021exploration,
+    author = {Ramakrishnan, Santhosh K. and Jayaraman, Dinesh and Grauman, Kristen},
+    title = {An Exploration of Embodied Visual Exploration},
+    year = {2021},
+    doi = {10.1007/s11263-021-01437-z},
+    URL = {https://doi.org/10.1007/s11263-021-01437-z},
+    journal = {International Journal of Computer Vision}
 }
 ```
 
